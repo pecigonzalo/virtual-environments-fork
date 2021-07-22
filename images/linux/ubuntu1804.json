@@ -40,38 +40,19 @@
         }
     ],
     "post-processors": [
-        {
-            "type": "docker-tag",
-            "repository": "catthehacker/ubuntu",
-            "tags": ["full-18.04", "full-18.04-{{user `image_version`}}"]
-        },
-        {
-            "type": "docker-push",
-            "login_username": "{{user `dockerhub_username`}}",
-            "login_password": "{{user `dockerhub_password`}}"
-        },
-        {
-            "type": "docker-tag",
-            "repository": "ghcr.io/catthehacker/ubuntu",
-            "tags": ["full-18.04", "full-18.04-{{user `image_version`}}"]
-        },
-        {
-            "type": "docker-push",
-            "login_username": "{{user `ghcr_username`}}",
-            "login_password": "{{user `ghcr_password`}}",
-            "login_server": "ghcr.io"
-        },
-        {
-            "type": "docker-tag",
-            "repository": "quay.io/catthehacker/ubuntu",
-            "tags": ["full-18.04", "full-18.04-{{user `image_version`}}"]
-        },
-        {
-            "type": "docker-push",
-            "login_username": "{{user `quay_username`}}",
-            "login_password": "{{user `quay_password`}}",
-            "login_server": "quay.io"
-        }
+        [
+            {
+                "type": "docker-tag",
+                "repository": "ghcr.io/catthehacker/ubuntu",
+                "tags": ["full-18.04", "full-18.04-{{user `image_version`}}"]
+            },
+            {
+                "type": "docker-push",
+                "login_username": "{{user `ghcr_username`}}",
+                "login_password": "{{user `ghcr_password`}}",
+                "login_server": "ghcr.io"
+            }
+        ]
     ],
     "provisioners": [
         {
