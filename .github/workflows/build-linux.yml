@@ -15,18 +15,6 @@ on:
       - 'images/linux/**'
   workflow_dispatch:
 
-env:
-  SLUG: ${{ github.repository_owner }}/ubuntu
-  DISTRO: ubuntu
-  PLATFORMS: linux/amd64
-  NODE: '14'
-  BUILD_REF: ${{ github.sha }}
-  SKIP_TEST: false
-
-defaults:
-  run:
-    shell: sh
-
 jobs:
   build-base:
     runs-on: ubuntu-latest
@@ -34,12 +22,13 @@ jobs:
       fail-fast: true
       max-parallel: 4
       matrix:
-        version: [2004]
+        version: [2004, 1804]
     steps:
       - uses: actions/checkout@v2
 
-      - name: Clean up runner
+      - name: Build ${{ matrix.version }}
         run: |
+          echo "::group::cleanup"
           sudo swapoff -a
           sudo rm -f /swapfile
           sudo rm -rf "/usr/local/share/boost"
@@ -68,15 +57,15 @@ jobs:
           sudo apt-get -y clean
           #sudo apt-get update
           df -h
-
-      - name: Build and push image
-        run: |
+          echo "::endgroup::"
           cd images/linux/
+          echo "::group::packer"
           packer build -var "image_version=$(date +%Y%m%d)" ubuntu${{ matrix.version }}.json
+          echo "::endgroup::"
         env:
           GHCR_USERNAME: ${{ github.repository_owner }}
           GHCR_PASSWORD: ${{ github.token }}
-          DCKR_USERNAME: ${{ secrets.DOCKER_USER }}
-          DCKR_PASSWORD: ${{ secrets.DOCKER_PASS }}
-          QUAY_USERNAME: ${{ secrets.QUAY_USER }}
-          QUAY_PASSWORD: ${{ secrets.QUAY_PASS }}
+          #DCKR_USERNAME: ${{ secrets.DOCKER_USER }}
+          #DCKR_PASSWORD: ${{ secrets.DOCKER_PASS }}
+          #QUAY_USERNAME: ${{ secrets.QUAY_USER }}
+          #QUAY_PASSWORD: ${{ secrets.QUAY_PASS }}
