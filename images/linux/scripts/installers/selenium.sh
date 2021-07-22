@@ -5,7 +5,8 @@
 ################################################################################
 
 # Source the helpers for use with the script
-source $HELPER_SCRIPTS/install.sh
+# shellcheck source=/images/linux/scripts/helpers/install.sh
+source "$HELPER_SCRIPTS"/install.sh
 
 # Determine latest selenium standalone server version
 SELENIUM_LATEST_VERSION_URL=https://api.github.com/repos/SeleniumHQ/selenium/releases/latest

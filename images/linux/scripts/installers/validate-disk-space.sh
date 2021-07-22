@@ -9,12 +9,12 @@ minimumFreeSpaceMB=15000
 
 echo "Available disk space: $availableSpaceMB MB"
 
-if [ $RUN_VALIDATION != "true" ]; then
+if [ "$RUN_VALIDATION" != "true" ]; then
     echo "Skipping validation disk space..."
     exit 0
 fi
 
-if [ $availableSpaceMB -le $minimumFreeSpaceMB ]; then
+if [ "$availableSpaceMB" -le $minimumFreeSpaceMB ]; then
     echo "Not enough disk space on the image (minimum available space: $minimumFreeSpaceMB MB)"
     exit 1
 fi

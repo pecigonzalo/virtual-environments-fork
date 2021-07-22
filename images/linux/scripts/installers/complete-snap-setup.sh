@@ -6,7 +6,8 @@
 ################################################################################
 
 # Source the helpers
-source $HELPER_SCRIPTS/etc-environment.sh
+# shellcheck source=/images/linux/scripts/helpers/etc-environment.sh
+source "$HELPER_SCRIPTS"/etc-environment.sh
 
 # Update /etc/environemnt
 prependEtcEnvironmentPath "/snap/bin"

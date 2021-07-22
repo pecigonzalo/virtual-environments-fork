@@ -5,8 +5,10 @@
 ################################################################################
 
 # Source the helpers for use with the script
-source $HELPER_SCRIPTS/os.sh
-source $HELPER_SCRIPTS/install.sh
+# shellcheck source=/images/linux/scripts/helpers/os.sh
+source "$HELPER_SCRIPTS"/os.sh
+# shellcheck source=/images/linux/scripts/helpers/install.sh
+source "$HELPER_SCRIPTS"/install.sh
 
 function InstallGcc {
     version=$1

@@ -5,7 +5,8 @@
 ################################################################################
 
 # Source the helpers for use with the script
-source $HELPER_SCRIPTS/install.sh
+# shellcheck source=/images/linux/scripts/helpers/install.sh
+source "$HELPER_SCRIPTS"/install.sh
 
 GIT_REPO="ppa:git-core/ppa"
 GIT_LFS_REPO="https://packagecloud.io/install/repositories/github/git-lfs"

@@ -5,18 +5,18 @@ function Get-BashVersion {
 
 function Get-CPPVersions {
     $result = Get-CommandResult "apt list --installed" -Multiline
-    $cppVersions = $result.Output | Where-Object { $_ -match "g\+\+-\d+"} | ForEach-Object {
+    $cppVersions = $result.Output | Where-Object { $_ -match "g\+\+-\d+" } | ForEach-Object {
         & $_.Split("/")[0] --version | Select-Object -First 1 | Take-OutputPart -Part 3
-    } | Sort-Object {[Version]$_}
+    } | Sort-Object { [Version]$_ }
     return "GNU C++ " + ($cppVersions -Join ", ")
 }
 
 function Get-FortranVersions {
     $result = Get-CommandResult "apt list --installed" -Multiline
-    $fortranVersions = $result.Output | Where-Object { $_ -match "^gfortran-\d+"} | ForEach-Object {
+    $fortranVersions = $result.Output | Where-Object { $_ -match "^gfortran-\d+" } | ForEach-Object {
         $_ -match "now (?<version>\d+\.\d+\.\d+)-" | Out-Null
         $Matches.version
-    } | Sort-Object {[Version]$_}
+    } | Sort-Object { [Version]$_ }
     return "GNU Fortran " + ($fortranVersions -Join ", ")
 }
 
@@ -28,13 +28,13 @@ function Get-ClangToolVersions {
     )
 
     $result = Get-CommandResult "apt list --installed" -Multiline
-    $toolVersions = $result.Output | Where-Object { $_ -match "^${ToolName}-\d+"} | ForEach-Object {
+    $toolVersions = $result.Output | Where-Object { $_ -match "^${ToolName}-\d+" } | ForEach-Object {
         $clangCommand = ($_ -Split "/")[0]
         Invoke-Expression "$clangCommand --version" | Where-Object { $_ -match "${ToolName} version" } | ForEach-Object {
             $_ -match "${ToolName} version (?<version>${VersionPattern}" | Out-Null
             $Matches.version
-            }
-        } | Sort-Object {[Version]$_}
+        }
+    } | Sort-Object { [Version]$_ }
 
     return $toolVersions -Join ", "
 }
@@ -45,7 +45,7 @@ function Get-ClangVersions {
 }
 
 function Get-LLVMInfo {
-    $clangVersions = Get-ClangToolVersions -ToolName "clang"
+    #$clangVersions = Get-ClangToolVersions -ToolName "clang"
     $clangFormatVersions = Get-ClangToolVersions -ToolName "clang-format"
     $aptSourceRepo = Get-AptSourceRepository -PackageName "llvm"
     return "LLVM components: Clang $clangFormatVersions, Clang-format $clangFormatVersions (apt source: $aptSourceRepo)"
@@ -122,11 +122,6 @@ function Get-RubyVersion {
 function Get-SwiftVersion {
     $swiftVersion = swift --version | Out-String | Take-OutputPart -Part 2
     return "Swift $swiftVersion"
-}
-
-function Get-KotlinVersion {
-    $kotlinVersion = kotlin -version | Out-String | Take-OutputPart -Part 2
-    return "Kotlin $kotlinVersion"
 }
 
 function Get-JuliaVersion {
@@ -231,7 +226,7 @@ function Get-SbtVersion {
 
 function Get-PHPVersions {
     $result = Get-CommandResult "apt list --installed" -Multiline
-    return $result.Output | Where-Object { $_ -match "^php\d+\.\d+/"} | ForEach-Object {
+    return $result.Output | Where-Object { $_ -match "^php\d+\.\d+/" } | ForEach-Object {
         $_ -match "now (?<version>\d+\.\d+\.\d+)-" | Out-Null
         $Matches.version
     }
@@ -249,20 +244,20 @@ function Get-PHPUnitVersion {
 
 function Build-PHPTable {
     $php = @{
-        "Tool" = "PHP"
+        "Tool"    = "PHP"
         "Version" = "$(Get-PHPVersions -Join '<br>')"
     }
     $composer = @{
-        "Tool" = "Composer"
+        "Tool"    = "Composer"
         "Version" = Get-ComposerVersion
     }
     $phpunit = @{
-        "Tool" = "PHPUnit"
+        "Tool"    = "PHPUnit"
         "Version" = Get-PHPUnitVersion
     }
     return @($php, $composer, $phpunit) | ForEach-Object {
         [PSCustomObject] @{
-            "Tool" = $_.Tool
+            "Tool"    = $_.Tool
             "Version" = $_.Version
         }
     }
@@ -305,7 +300,7 @@ function Get-StackVersion {
 }
 
 function Get-AzModuleVersions {
-    $azModuleVersions = Get-ChildItem /usr/share | Where-Object { $_ -match "az_\d+" } | Foreach-Object {
+    $azModuleVersions = Get-ChildItem /usr/share | Where-Object { $_ -match "az_\d+" } | ForEach-Object {
         $_.Name.Split("_")[1]
     }
 
@@ -322,7 +317,7 @@ function Get-PowerShellModules {
         $moduleVersions = ($_.group.Version | Sort-Object -Unique) -join '<br>'
 
         [PSCustomObject]@{
-            Module = $moduleName
+            Module  = $moduleName
             Version = $moduleVersions
         }
     }
@@ -346,8 +341,8 @@ function Get-CachedDockerImagesTableData {
         $parts = $_.Split("|")
         [PSCustomObject] @{
             "Repository:Tag" = $parts[0]
-            "Digest" = $parts[1]
-            "Created" = $parts[2].split(' ')[0]
+            "Digest"         = $parts[1]
+            "Created"        = $parts[2].split(' ')[0]
         }
     } | Sort-Object -Property "Repository:Tag"
 }
@@ -377,7 +372,7 @@ function Get-PipxVersion {
 }
 
 function Get-GraalVMVersion {
-    $version = & "$env:GRAALVM_11_ROOT\bin\java" --version | Select-String -Pattern "GraalVM" | Take-OutputPart -Part 5,6
+    $version = & "$env:GRAALVM_11_ROOT\bin\java" --version | Select-String -Pattern "GraalVM" | Take-OutputPart -Part 5, 6
     return $version
 }
 
@@ -386,7 +381,7 @@ function Build-GraalVMTable {
     $envVariables = "GRAALVM_11_ROOT"
 
     return [PSCustomObject] @{
-        "Version" = $version
+        "Version"               = $version
         "Environment variables" = $envVariables
     }
 }
@@ -394,16 +389,16 @@ function Build-GraalVMTable {
 function Build-PackageManagementEnvironmentTable {
     return @(
         @{
-            "Name" = "CONDA"
+            "Name"  = "CONDA"
             "Value" = $env:CONDA
         },
         @{
-            "Name" = "VCPKG_INSTALLATION_ROOT"
+            "Name"  = "VCPKG_INSTALLATION_ROOT"
             "Value" = $env:VCPKG_INSTALLATION_ROOT
         }
     ) | ForEach-Object {
         [PSCustomObject] @{
-            "Name" = $_.Name
+            "Name"  = $_.Name
             "Value" = $_.Value
         }
     }

@@ -5,27 +5,28 @@
 ################################################################################
 
 # Source the helpers for use with the script
-source $HELPER_SCRIPTS/os.sh
-source $HELPER_SCRIPTS/install.sh
-source $HELPER_SCRIPTS/etc-environment.sh
+# shellcheck source=/images/linux/scripts/helpers/os.sh
+source "$HELPER_SCRIPTS"/os.sh
+# shellcheck source=/images/linux/scripts/helpers/install.sh
+source "$HELPER_SCRIPTS"/install.sh
+# shellcheck source=/images/linux/scripts/helpers/etc-environment.sh
+source "$HELPER_SCRIPTS"/etc-environment.sh
 
-function filter_components_by_version {
+function filter_components_by_version() {
     minimumVersion=$1
     shift
     toolsArr=("$@")
 
-    for item in ${toolsArr[@]}
-    do
+    for item in ${toolsArr[@]}; do
         # take the last argument after spliting string by ';'' and '-''
         version=$(echo "${item##*[-;]}")
-        if verlte $minimumVersion $version
-        then
+        if verlte $minimumVersion $version; then
             components+=($item)
         fi
     done
 }
 
-function get_full_ndk_version {
+function get_full_ndk_version() {
     majorVersion=$1
     ndkFullVersion=$($SDKMANAGER --list | grep "ndk;${majorVersion}.*" | awk '{gsub("ndk;", ""); print $1}' | sort -V | tail -n1)
     echo "$ndkFullVersion"
@@ -59,8 +60,7 @@ rm -f $cmdlineTools
 
 # Check sdk manager installation
 ${SDKMANAGER} --list 1>/dev/null
-if [ $? -eq 0 ]
-then
+if [ $? -eq 0 ]; then
     echo "Android SDK manager was installed"
 else
     echo "Android SDK manager was not installed"

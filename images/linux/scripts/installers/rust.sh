@@ -5,7 +5,8 @@
 ################################################################################
 
 # Source the helpers for use with the script
-source $HELPER_SCRIPTS/etc-environment.sh
+# shellcheck source=/images/linux/scripts/helpers/etc-environment.sh
+source "$HELPER_SCRIPTS"/etc-environment.sh
 
 export RUSTUP_HOME=/usr/share/rust/.rustup
 export CARGO_HOME=/usr/share/rust/.cargo
@@ -20,7 +21,7 @@ rustup component add rustfmt clippy
 cargo install --locked bindgen cbindgen cargo-audit cargo-outdated
 
 # Permissions
-chmod -R 777 $(dirname $RUSTUP_HOME)
+chmod -R 777 "$(dirname $RUSTUP_HOME)"
 
 # Cleanup Cargo cache
 rm -rf ${CARGO_HOME}/registry/*

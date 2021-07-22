@@ -5,7 +5,8 @@
 ################################################################################
 
 # Source the helpers for use with the script
-source $HELPER_SCRIPTS/etc-environment.sh
+# shellcheck source=/images/linux/scripts/helpers/etc-environment.sh
+source "$HELPER_SCRIPTS"/etc-environment.sh
 
 # Any nonzero value for noninteractive installation
 export BOOTSTRAP_HASKELL_NONINTERACTIVE=1

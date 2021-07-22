@@ -5,7 +5,8 @@
 ################################################################################
 
 # Source the helpers for use with the script
-source $HELPER_SCRIPTS/os.sh
+# shellcheck source=/images/linux/scripts/helpers/os.sh
+source "$HELPER_SCRIPTS"/os.sh
 
 # Set env variable for vcpkg
 VCPKG_INSTALLATION_ROOT=/usr/local/share/vcpkg

@@ -82,4 +82,3 @@ function  reloadEtcEnvironment {
     etc_path=$(getEtcEnvironmentVariable PATH)
     export PATH="$PATH:$etc_path"
 }
-

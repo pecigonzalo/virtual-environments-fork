@@ -21,6 +21,8 @@ Import-Module (Join-Path $PSScriptRoot "SoftwareReport.WebServers.psm1") -Disabl
 # Restore file owner in user profile
 Restore-UserOwner
 
+Update-Environment
+
 $markdown = ""
 
 $OSName = Get-OSName
@@ -36,26 +38,26 @@ $markdown += New-MDHeader "Installed Software" -Level 2
 $markdown += New-MDHeader "Language and Runtime" -Level 3
 
 $runtimesList = @(
-        (Get-BashVersion),
-        (Get-CPPVersions),
-        (Get-FortranVersions),
-        (Get-ErlangVersion),
-        (Get-ErlangRebar3Version),
-        (Get-MonoVersion),
-        (Get-MsbuildVersion),
-        (Get-NodeVersion),
-        (Get-PerlVersion),
-        (Get-PythonVersion),
-        (Get-Python3Version),
-        (Get-RubyVersion),
-        (Get-SwiftVersion),
-        (Get-JuliaVersion),
-        (Get-KotlinVersion)
-        ) 
+    (Get-BashVersion),
+    (Get-CPPVersions),
+    (Get-FortranVersions),
+    (Get-ErlangVersion),
+    (Get-ErlangRebar3Version),
+    (Get-MonoVersion),
+    (Get-MsbuildVersion),
+    (Get-NodeVersion),
+    (Get-PerlVersion),
+    (Get-PythonVersion),
+    (Get-Python3Version),
+    (Get-RubyVersion),
+    (Get-SwiftVersion),
+    (Get-JuliaVersion)
+) 
 
 if (Test-IsUbuntu20) {
     $runtimesList += (Get-LLVMInfo)
-} else {
+}
+else {
     $runtimesList += (Get-ClangVersions)
     $runtimesList += (Get-ClangFormatVersions)
 }
@@ -65,16 +67,16 @@ $markdown += New-MDList -Style Unordered -Lines ($runtimesList | Sort-Object)
 $markdown += New-MDHeader "Package Management" -Level 3
 
 $packageManagementList = @(
-        (Get-HomebrewVersion),
-        (Get-CpanVersion),
-        (Get-GemVersion),
-        (Get-MinicondaVersion),
-        (Get-HelmVersion),
-        (Get-NpmVersion),
-        (Get-YarnVersion),
-        (Get-PipVersion),
-        (Get-Pip3Version),
-        (Get-VcpkgVersion)
+    (Get-HomebrewVersion),
+    #(Get-CpanVersion), hangs in docker
+    (Get-GemVersion),
+    (Get-MinicondaVersion),
+    (Get-HelmVersion),
+    (Get-NpmVersion),
+    (Get-YarnVersion),
+    (Get-PipVersion),
+    (Get-Pip3Version),
+    (Get-VcpkgVersion)
 )
 
 if (-not (Test-IsUbuntu16)) {
@@ -105,7 +107,7 @@ $markdown += New-MDList -Style Unordered -Lines ($projectManagementList | Sort-O
 
 $markdown += New-MDHeader "Tools" -Level 3
 $toolsList = @(
-    (Get-AnsibleVersion),
+    #(Get-AnsibleVersion), doesn't work well in Docker
     (Get-AptFastVersion),
     (Get-AzCopyVersion),
     (Get-BazelVersion),
@@ -162,19 +164,19 @@ $markdown += New-MDList -Style Unordered -Lines ($toolsList | Sort-Object)
 
 $markdown += New-MDHeader "CLI Tools" -Level 3
 $markdown += New-MDList -Style Unordered -Lines (@(
-    (Get-AlibabaCloudCliVersion),
-    (Get-AWSCliVersion),
-    (Get-AWSCliSessionManagerPluginVersion),
-    (Get-AWSSAMVersion),
-    (Get-AzureCliVersion),
-    (Get-AzureDevopsVersion),
-    (Get-GitHubCliVersion),
-    (Get-GoogleCloudSDKVersion),
-    (Get-HubCliVersion),
-    (Get-NetlifyCliVersion),
-    (Get-OCCliVersion),
-    (Get-ORASCliVersion),
-    (Get-VerselCliversion)
+        (Get-AlibabaCloudCliVersion),
+        (Get-AWSCliVersion),
+        (Get-AWSCliSessionManagerPluginVersion),
+        (Get-AWSSAMVersion),
+        (Get-AzureCliVersion),
+        (Get-AzureDevopsVersion),
+        (Get-GitHubCliVersion),
+        (Get-GoogleCloudSDKVersion),
+        (Get-HubCliVersion),
+        (Get-NetlifyCliVersion),
+        (Get-OCCliVersion),
+        (Get-ORASCliVersion),
+        (Get-VerselCliversion)
     ) | Sort-Object
 )
 
@@ -194,30 +196,30 @@ if (-not (Test-IsUbuntu16)) {
 
 $markdown += New-MDHeader "Haskell" -Level 3
 $markdown += New-MDList -Style Unordered -Lines (@(
-    (Get-GHCVersion),
-    (Get-GHCupVersion),
-    (Get-CabalVersion),
-    (Get-StackVersion)
+        (Get-GHCVersion),
+        (Get-GHCupVersion),
+        (Get-CabalVersion),
+        (Get-StackVersion)
     ) | Sort-Object
 )
 
 $markdown += New-MDHeader "Rust Tools" -Level 3
 $markdown += New-MDList -Style Unordered -Lines (@(
-    (Get-RustVersion),
-    (Get-RustupVersion),
-    (Get-RustdocVersion),
-    (Get-CargoVersion)
+        (Get-RustVersion),
+        (Get-RustupVersion),
+        (Get-RustdocVersion),
+        (Get-CargoVersion)
     ) | Sort-Object
 )
 
 $markdown += New-MDHeader "Packages" -Level 4
 $markdown += New-MDList -Style Unordered -Lines (@(
-    (Get-BindgenVersion),
-    (Get-CargoAuditVersion),
-    (Get-CargoOutdatedVersion),
-    (Get-CargoClippyVersion),
-    (Get-CbindgenVersion),
-    (Get-RustfmtVersion)
+        (Get-BindgenVersion),
+        (Get-CargoAuditVersion),
+        (Get-CargoOutdatedVersion),
+        (Get-CargoClippyVersion),
+        (Get-CbindgenVersion),
+        (Get-RustfmtVersion)
     ) | Sort-Object
 )
 
@@ -243,9 +245,9 @@ $markdown += New-MDList -Style Unordered -Lines @(
 
 $markdown += New-MDHeader "Databases" -Level 3
 $markdown += New-MDList -Style Unordered -Lines (@(
-    (Get-PostgreSqlVersion),
-    (Get-MongoDbVersion),
-    (Get-SqliteVersion)
+        (Get-PostgreSqlVersion),
+        (Get-MongoDbVersion),
+        (Get-SqliteVersion)
     ) | Sort-Object
 )
 

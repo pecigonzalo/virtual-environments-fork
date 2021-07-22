@@ -27,7 +27,7 @@ function Get-BazeliskVersion {
 }
 
 function Get-BicepVersion {
-    (bicep --version | Out-String) -match  "bicep cli version (?<version>\d+\.\d+\.\d+)" | Out-Null
+    (bicep --version | Out-String) -match "bicep cli version (?<version>\d+\.\d+\.\d+)" | Out-Null
     $bicepVersion = $Matches.Version
     return "Bicep $bicepVersion"
 }
@@ -182,7 +182,7 @@ function Get-PhantomJSVersion {
 }
 
 function Get-TerraformVersion {
-    return (terraform version | Select-String "^Terraform").Line.Replace('v','')
+    return (terraform version | Select-String "^Terraform").Line.Replace('v', '')
 }
 
 function Get-JqVersion {

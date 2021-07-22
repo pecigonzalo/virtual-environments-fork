@@ -1,0 +1,13 @@
+{
+    "recommendations": [
+        "editorconfig.editorconfig",
+        "ms-azuretools.vscode-docker",
+        "usernamehw.errorlens",
+        "mhutchie.git-graph",
+        "davidanson.vscode-markdownlint",
+        "ms-vscode.powershell",
+        "ms-vscode.powershell-preview",
+        "esbenp.prettier-vscode",
+        "timonwong.shellcheck"
+    ]
+}

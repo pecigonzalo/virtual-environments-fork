@@ -4,7 +4,8 @@
 ##  Desc:  Installs the OC CLI
 ################################################################################
 
-source $HELPER_SCRIPTS/install.sh
+# shellcheck source=/images/linux/scripts/helpers/install.sh
+source "$HELPER_SCRIPTS"/install.sh
 
 # Install the oc CLI
 DOWNLOAD_URL="https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-client-linux.tar.gz"

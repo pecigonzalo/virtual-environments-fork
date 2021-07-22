@@ -4,7 +4,8 @@
 ##  Desc:  Install the CodeQL CLI Bundle to the toolcache.
 ################################################################################
 
-source $HELPER_SCRIPTS/install.sh
+# shellcheck source=/images/linux/scripts/helpers/install.sh
+source "$HELPER_SCRIPTS"/install.sh
 
 # Retrieve the name of the CodeQL bundle preferred by the Action (in the format codeql-bundle-YYYYMMDD).
 codeql_bundle_name="$(curl -sSL https://raw.githubusercontent.com/github/codeql-action/main/src/defaults.json | jq -r .bundleVersion)"

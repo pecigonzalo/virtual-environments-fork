@@ -4,9 +4,12 @@
 ##  Desc:  Installs .NET Core SDK
 ################################################################################
 
-source $HELPER_SCRIPTS/etc-environment.sh
-source $HELPER_SCRIPTS/install.sh
-source $HELPER_SCRIPTS/os.sh
+# shellcheck source=/images/linux/scripts/helpers/etc-environment.sh
+source "$HELPER_SCRIPTS"/etc-environment.sh
+# shellcheck source=/images/linux/scripts/helpers/install.sh
+source "$HELPER_SCRIPTS"/install.sh
+# shellcheck source=/images/linux/scripts/helpers/os.sh
+source "$HELPER_SCRIPTS"/os.sh
 
 # Ubuntu 20 doesn't support EOL versions
 LATEST_DOTNET_PACKAGES=$(get_toolset_value '.dotnet.aptPackages[]')
@@ -58,7 +61,7 @@ parallel --jobs 0 --halt soon,fail=1 \
     'url="https://dotnetcli.blob.core.windows.net/dotnet/Sdk/{}/dotnet-sdk-{}-linux-x64.tar.gz"; \
     download_with_retries $url' ::: "${sortedSdks[@]}"
 
-find . -name "*.tar.gz" | parallel --halt soon,fail=1 'extract_dotnet_sdk {}'
+find . -name "dotnet-sdk-*-linux-x64.tar.gz" | parallel --halt soon,fail=1 'extract_dotnet_sdk {}'
 
 # NuGetFallbackFolder at /usr/share/dotnet/sdk/NuGetFallbackFolder is warmed up by smoke test
 # Additional FTE will just copy to ~/.dotnet/NuGet which provides no benefit on a fungible machine

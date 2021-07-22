@@ -4,7 +4,7 @@ name: Linter
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
@@ -24,6 +24,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_JSON: true
           VALIDATE_MD: true
+          VALIDATE_POWERSHELL: true
           DEFAULT_BRANCH: ${{ github.base_ref }}
 
       - name: Checking shebang lines in MacOS and Ubuntu releases.

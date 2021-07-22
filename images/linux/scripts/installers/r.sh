@@ -1,7 +1,8 @@
 #!/bin/bash -e
 
 # Source the helpers for use with the script
-source $HELPER_SCRIPTS/os.sh
+# shellcheck source=/images/linux/scripts/helpers/os.sh
+source "$HELPER_SCRIPTS"/os.sh
 
 # install R
 osLabel=$(getOSVersionLabel)

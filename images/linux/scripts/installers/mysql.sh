@@ -4,6 +4,8 @@
 ##  Desc:  Installs MySQL Client
 ################################################################################
 
+exit 0
+
 export ACCEPT_EULA=Y
 
 # Mysql setting up root password

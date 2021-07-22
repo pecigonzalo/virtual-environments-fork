@@ -1,13 +1,13 @@
 Describe "PowerShellModules" {
     $modules = (Get-ToolsetContent).powershellModules
-    $withoutVersionsModules = $modules | Where-Object {-not $_.versions} | ForEach-Object {
-        @{moduleName = $_.name}
+    $withoutVersionsModules = $modules | Where-Object { -not $_.versions } | ForEach-Object {
+        @{moduleName = $_.name }
     }
 
-    $withVersionsModules = $modules | Where-Object {$_.versions} | ForEach-Object {
+    $withVersionsModules = $modules | Where-Object { $_.versions } | ForEach-Object {
         $moduleName = $_.name
         $_.versions | ForEach-Object {
-            @{moduleName = $moduleName; expectedVersion = $_}
+            @{moduleName = $moduleName; expectedVersion = $_ }
         }
     }
 
@@ -53,8 +53,8 @@ Describe "AzureModules" {
             if ($module.default) {
                 $moduleInfo = @{ moduleName = $moduleName; moduleDefault = $module.default }
                 It "<moduleDefault> set as default" -TestCases $moduleInfo {
-                        $moduleVersion = (Get-Module -ListAvailable -Name $moduleName).Version.ToString()
-                        $moduleVersion | Should -Match $moduleDefault
+                    $moduleVersion = (Get-Module -ListAvailable -Name $moduleName).Version.ToString()
+                    $moduleVersion | Should -Match $moduleDefault
                 }
             }
         }

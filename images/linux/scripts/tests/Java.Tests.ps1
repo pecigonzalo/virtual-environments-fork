@@ -1,7 +1,7 @@
 Import-Module "$PSScriptRoot/../helpers/Common.Helpers.psm1" -DisableNameChecking
 
 Describe "Java" {
-    [array]$jdkVersions = (Get-ToolsetContent).java.versions | ForEach-Object { @{Version = $_} }
+    [array]$jdkVersions = (Get-ToolsetContent).java.versions | ForEach-Object { @{Version = $_ } }
     $defaultJavaVersion = (Get-ToolsetContent).java.default
 
     It "Java <DefaultJavaVersion> is default" -TestCases @{ DefaultJavaVersion = $defaultJavaVersion } {

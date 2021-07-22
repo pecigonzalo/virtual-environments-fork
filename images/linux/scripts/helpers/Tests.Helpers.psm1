@@ -1,7 +1,7 @@
 Import-Module "$PSScriptRoot/../helpers/Common.Helpers.psm1" -DisableNameChecking
 
 # Validates that tool is installed and in PATH
-function Validate-ToolExist($tool) {
+function Test-ToolExist($tool) {
     Get-Command $tool -ErrorAction SilentlyContinue | Should -BeTrue
 }
 
@@ -17,13 +17,13 @@ function Invoke-PesterTests {
     }
 
     # Check that Pester module is imported
-    if (!(Get-Module "Pester")) {
+    if (!(Get-Module 'Pester')) {
         Import-Module Pester
     }
     
     $configuration = [PesterConfiguration] @{
-        Run = @{ Path = $testPath; PassThru = $true }
-        Output = @{ Verbosity = "Detailed" }
+        Run    = @{ Path = $testPath; PassThru = $true }
+        Output = @{ Verbosity = 'Detailed' }
     }
     if ($TestName) {
         $configuration.Filter.FullName = $TestName
@@ -31,14 +31,14 @@ function Invoke-PesterTests {
 
     # Switch ErrorActionPreference to Stop temporary to make sure that tests will fail on silent errors too
     $backupErrorActionPreference = $ErrorActionPreference
-    $ErrorActionPreference = "Stop"
+    $ErrorActionPreference = 'Stop'
     $results = Invoke-Pester -Configuration $configuration
     $ErrorActionPreference = $backupErrorActionPreference
 
     # Fail in case if no tests are run
     if (-not ($results -and ($results.FailedCount -eq 0) -and (($results.PassedCount + $results.SkippedCount) -gt 0))) {
         $results
-        throw "Test run has failed"
+        throw 'Test run has failed'
     }
 }
 
@@ -54,9 +54,8 @@ function ShouldReturnZeroExitCode {
     [bool]$succeeded = $result.ExitCode -eq 0
     if ($Negate) { $succeeded = -not $succeeded }
 
-    if (-not $succeeded)
-    {
-        $commandOutputIndent = " " * 4
+    if (-not $succeeded) {
+        $commandOutputIndent = ' ' * 4
         $commandOutput = ($result.Output | ForEach-Object { "${commandOutputIndent}${_}" }) -join "`n"
         $failureMessage = "Command '${ActualValue}' has finished with exit code`n${commandOutput}"
     }
@@ -86,8 +85,7 @@ function ShouldMatchCommandOutput {
     if (-not $succeeded) {
         if ($Negate) {
             $failureMessage = "Expected regular expression '$RegularExpression' for '$ActualValue' command to not match '$output', but it did match."
-        }
-        else {
+        } else {
             $failureMessage = "Expected regular expression '$RegularExpression' for '$ActualValue' command to match '$output', but it did not match."
         }
     }

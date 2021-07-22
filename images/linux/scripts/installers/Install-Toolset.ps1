@@ -18,18 +18,18 @@ Function Install-Asset {
     New-Item -ItemType Directory -Path $assetFolderPath
     tar -xzf $ReleaseAsset.filename -C $assetFolderPath
 
-    Write-Host "Invoke installation script..."
+    Write-Host 'Invoke installation script...'
     Push-Location -Path $assetFolderPath
-    Invoke-Expression "bash ./setup.sh"
+    Invoke-Expression 'bash ./setup.sh'
     Pop-Location
 }
 
-$ErrorActionPreference = "Stop"
+$ErrorActionPreference = 'Stop'
 
 # Get toolset content
 $toolset = Get-Content -Path "$env:INSTALLER_SCRIPT_FOLDER/toolset.json" -Raw
 
-$tools = ConvertFrom-Json -InputObject $toolset | Select-Object -ExpandProperty toolcache | Where-Object {$_.url -ne $null }
+$tools = ConvertFrom-Json -InputObject $toolset | Select-Object -ExpandProperty toolcache | Where-Object { $_.url -ne $null }
 
 foreach ($tool in $tools) {
     # Get versions manifest for current tool
@@ -37,18 +37,18 @@ foreach ($tool in $tools) {
 
     # Get github release asset for each version
     foreach ($toolVersion in $tool.versions) {
-        $asset = $assets | Where-Object version -like $toolVersion `
+        $asset = $assets | Where-Object version -Like $toolVersion `
         | Select-Object -ExpandProperty files `
-        | Where-Object { ($_.platform -eq $tool.platform) -and ($_.platform_version -eq $tool.platform_version)} `
+        | Where-Object { ($_.platform -eq $tool.platform) -and ($_.platform_version -eq $tool.platform_version) } `
         | Select-Object -First 1
 
         Write-Host "Installing $($tool.name) $toolVersion $($tool.arch)..."
         if ($null -ne $asset) {
             Install-Asset -ReleaseAsset $asset
         } else {
-            Write-Host "Asset was not found in versions manifest"
+            Write-Host 'Asset was not found in versions manifest'
             exit 1
         }
     }
-    chown -R "$($env:SUDO_USER):$($env:SUDO_USER)" "/opt/hostedtoolcache/$($tool.name)"
+    chown -R "${env:SUDO_USER}:${env:SUDO_USER}" "/opt/hostedtoolcache/$($tool.name)"
 }

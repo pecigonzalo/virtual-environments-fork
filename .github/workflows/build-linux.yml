@@ -1,0 +1,82 @@
+name: Build ubuntu images
+
+on:
+  schedule:
+    - cron: 0 12 */7 * *
+  push:
+    paths:
+      - '.github/workflows/build-linux.yml'
+      - 'images/linux/**'
+    branches:
+      - 'master'
+  pull_request:
+    paths:
+      - '.github/workflows/build-linux.yml'
+      - 'images/linux/**'
+  workflow_dispatch:
+
+env:
+  SLUG: ${{ github.repository_owner }}/ubuntu
+  DISTRO: ubuntu
+  PLATFORMS: linux/amd64
+  NODE: '14'
+  BUILD_REF: ${{ github.sha }}
+  SKIP_TEST: false
+
+defaults:
+  run:
+    shell: sh
+
+jobs:
+  build-base:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      max-parallel: 4
+      matrix:
+        version: [2004]
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Clean up runner
+        run: |
+          sudo swapoff -a
+          sudo rm -f /swapfile
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          sudo rm -rf /usr/share/dotnet/
+          sudo rm -rf "$ANDROID_SDK_ROOT"
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf "$SWIFT_PATH"
+          sudo rm -rf /usr/share/swift
+          sudo rm -rf /usr/share/rust
+          sudo rm -rf /usr/local/share/vcpkg
+          sudo rm -rf /usr/share/miniconda
+          sudo rm -rf /usr/lib/node_modules
+          sudo rm -rf /usr/share/sbt
+          sudo rm -rf /usr/share/java
+          #sudo docker system prune -a -f
+          sudo rm -rf /home/linuxbrew
+          #ver=$(echo "20.04" | sed 's|\.||g')
+          #wget -qO "toolset.json" "https://raw.githubusercontent.com/actions/virtual-environments/main/images/linux/toolsets/toolset-${ver}.json"
+          #common_packages=$(jq -r ".apt.common_packages[]" "toolset.json")
+          #cmd_packages=$(jq -r ".apt.cmd_packages[]" "toolset.json")
+          #sudo apt-get purge -f -y ant
+          #sudo apt-get purge -f -y ${common_packages[@]}
+          #sudo apt-get purge -f -y ${cmd_packages[@]}
+          sudo apt-get -y autoremove
+          sudo apt-get -y clean
+          #sudo apt-get update
+          df -h
+
+      - name: Build and push image
+        run: |
+          cd images/linux/
+          packer build -var "image_version=$(date +%Y%m%d)" ubuntu${{ matrix.version }}.json
+        env:
+          GHCR_USERNAME: ${{ github.repository_owner }}
+          GHCR_PASSWORD: ${{ github.token }}
+          DCKR_USERNAME: ${{ secrets.DOCKER_USER }}
+          DCKR_PASSWORD: ${{ secrets.DOCKER_PASS }}
+          QUAY_USERNAME: ${{ secrets.QUAY_USER }}
+          QUAY_PASSWORD: ${{ secrets.QUAY_PASS }}

@@ -13,9 +13,9 @@ if [[ -d "/opt" ]]; then
 fi
 
 # remove installer and helper folders
-rm -rf $HELPER_SCRIPT_FOLDER
-rm -rf $INSTALLER_SCRIPT_FOLDER
-chmod 755 $IMAGE_FOLDER
+rm -rf "$HELPER_SCRIPT_FOLDER"
+rm -rf "$INSTALLER_SCRIPT_FOLDER"
+chmod 755 "$IMAGE_FOLDER"
 
 # Remove quotes around PATH
 ENVPATH=$(grep 'PATH=' /etc/environment | head -n 1 | sed -z 's/^PATH=*//')

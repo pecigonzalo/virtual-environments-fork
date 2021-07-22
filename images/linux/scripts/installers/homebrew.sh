@@ -6,8 +6,12 @@
 ################################################################################
 
 # Source the helpers
-source $HELPER_SCRIPTS/etc-environment.sh
-source $HELPER_SCRIPTS/install.sh
+# shellcheck source=/images/linux/scripts/helpers/etc-environment.sh
+source "$HELPER_SCRIPTS"/etc-environment.sh
+# shellcheck source=/images/linux/scripts/helpers/install.sh
+source "$HELPER_SCRIPTS"/install.sh
+
+sudo chown -R runner:runner /home/runner
 
 # Install the Homebrew on Linux
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
@@ -15,9 +19,9 @@ eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
 
 # Update /etc/environemnt
 ## Put HOMEBREW_* variables
-brew shellenv|grep 'export HOMEBREW'|sed -E 's/^export (.*);$/\1/' | sudo tee -a /etc/environment
+brew shellenv | grep 'export HOMEBREW' | sed -E 's/^export (.*);$/\1/' | sudo tee -a /etc/environment
 # add brew executables locations to PATH
-brew_path=$(brew shellenv|grep  '^export PATH' |sed -E 's/^export PATH="([^$]+)\$.*/\1/')
+brew_path=$(brew shellenv | grep '^export PATH' | sed -E 's/^export PATH="([^$]+)\$.*/\1/')
 prependEtcEnvironmentPath "$brew_path"
 setEtcEnvironmentVariable HOMEBREW_NO_AUTO_UPDATE 1
 setEtcEnvironmentVariable HOMEBREW_CLEANUP_PERIODIC_FULL_DAYS 3650

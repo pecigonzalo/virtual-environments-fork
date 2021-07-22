@@ -3,8 +3,8 @@
 ##  File:  bazel.sh
 ##  Desc:  Installs Bazel and Bazelisk (A user-friendly launcher for Bazel)
 ################################################################################
-
-source $HELPER_SCRIPTS/install.sh
+# shellcheck source=/images/linux/scripts/helpers/install.sh
+source "$HELPER_SCRIPTS"/install.sh
 
 # Install bazelisk
 npm install -g @bazel/bazelisk

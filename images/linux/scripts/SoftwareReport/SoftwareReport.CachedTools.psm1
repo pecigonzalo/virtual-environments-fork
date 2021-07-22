@@ -30,12 +30,12 @@ function Get-ToolcacheGoVersions {
 
 function Build-GoEnvironmentTable {
     return Get-CachedToolInstances -Name "go" -VersionCommand "version" | ForEach-Object {
-        $Version = [System.Version]($_.Version -Split(" "))[0]
+        $Version = [System.Version]($_.Version -Split (" "))[0]
         $Name = "GOROOT_$($Version.major)_$($Version.minor)_X64"
-        $Value = (Get-Item env:\$Name).Value
+        #$Value = (Get-Item env:\$Name).Value
         [PSCustomObject] @{
-            "Name" = $Name
-            "Value" = (Get-Item env:\$Name).Value
+            "Name"         = $Name
+            "Value"        = (Get-Item env:\$Name).Value
             "Architecture" = $_. Architecture
         }
     }

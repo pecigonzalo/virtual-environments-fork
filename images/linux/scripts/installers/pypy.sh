@@ -4,7 +4,8 @@
 ##  Desc:  Installs PyPy
 ################################################################################
 
-source $HELPER_SCRIPTS/install.sh
+# shellcheck source=/images/linux/scripts/helpers/install.sh
+source "$HELPER_SCRIPTS"/install.sh
 
 # This function installs PyPy using the specified arguments:
 #   $1=PACKAGE_URL

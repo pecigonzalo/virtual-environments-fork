@@ -9,38 +9,31 @@ Describe "Apt" {
     }
 
     It "<toolName> is available" -TestCases $testCases {
-        if ($toolName -eq "acl")
-        {
+        if ($toolName -eq "acl") {
             $toolName = "getfacl"
         }
 
-        if ($toolName -eq "p7zip-full")
-        {
+        if ($toolName -eq "p7zip-full") {
             $toolName = "p7zip"
         }
 
-        if ($toolName -eq "subversion")
-        {
+        if ($toolName -eq "subversion") {
             $toolName = "svn"
         }
 
-        if ($toolName -eq "sphinxsearch")
-        {
+        if ($toolName -eq "sphinxsearch") {
             $toolName = "searchd"
         }
 
-        if ($toolName -eq "binutils")
-        {
+        if ($toolName -eq "binutils") {
             $toolName = "strings"
         }
 
-        if ($toolName -eq "coreutils")
-        {
+        if ($toolName -eq "coreutils") {
             $toolName = "tr"
         }
 
-        if ($toolName -eq "net-tools")
-        {
+        if ($toolName -eq "net-tools") {
             $toolName = "netstat"
         }
 

@@ -4,7 +4,8 @@
 ##  Desc:  Installs sbt
 ################################################################################
 
-source $HELPER_SCRIPTS/install.sh
+# shellcheck source=/images/linux/scripts/helpers/install.sh
+source "$HELPER_SCRIPTS"/install.sh
 
 # Install latest sbt release
 sbtVersion=$(curl -s -L "https://api.github.com/repos/sbt/sbt/releases" | jq -r '.[] | select(.prerelease==false).name' | sort --unique --version-sort | grep -ve "-.*" | tail -1)

@@ -5,9 +5,12 @@
 ################################################################################
 
 # Source the helpers for use with the script
-source $HELPER_SCRIPTS/etc-environment.sh
-source $HELPER_SCRIPTS/os.sh
-source $HELPER_SCRIPTS/install.sh
+# shellcheck source=/images/linux/scripts/helpers/etc-environment.sh
+source "$HELPER_SCRIPTS"/etc-environment.sh
+# shellcheck source=/images/linux/scripts/helpers/os.sh
+source "$HELPER_SCRIPTS"/os.sh
+# shellcheck source=/images/linux/scripts/helpers/install.sh
+source "$HELPER_SCRIPTS"/install.sh
 
 # add repository
 apt-add-repository ppa:ondrej/php -y
@@ -19,73 +22,73 @@ php_versions=$(get_toolset_value '.php.versions[]')
 for version in $php_versions; do
     echo "Installing PHP $version"
     apt-fast install -y --no-install-recommends \
-        php$version \
-        php$version-amqp \
-        php$version-apcu \
-        php$version-bcmath \
-        php$version-bz2 \
-        php$version-cgi \
-        php$version-cli \
-        php$version-common \
-        php$version-curl \
-        php$version-dba \
-        php$version-dev \
-        php$version-enchant \
-        php$version-fpm \
-        php$version-gd \
-        php$version-gmp \
-        php$version-igbinary \
-        php$version-imagick \
-        php$version-imap \
-        php$version-interbase \
-        php$version-intl \
-        php$version-ldap \
-        php$version-mbstring \
-        php$version-memcache \
-        php$version-memcached \
-        php$version-mongodb \
-        php$version-mysql \
-        php$version-odbc \
-        php$version-opcache \
-        php$version-pgsql \
-        php$version-phpdbg \
-        php$version-pspell \
-        php$version-readline \
-        php$version-redis \
-        php$version-snmp \
-        php$version-soap \
-        php$version-sqlite3 \
-        php$version-sybase \
-        php$version-tidy \
-        php$version-xdebug \
-        php$version-xml \
-        php$version-xsl \
-        php$version-yaml \
-        php$version-zip \
-        php$version-zmq
+        php"$version" \
+        php"$version"-amqp \
+        php"$version"-apcu \
+        php"$version"-bcmath \
+        php"$version"-bz2 \
+        php"$version"-cgi \
+        php"$version"-cli \
+        php"$version"-common \
+        php"$version"-curl \
+        php"$version"-dba \
+        php"$version"-dev \
+        php"$version"-enchant \
+        php"$version"-fpm \
+        php"$version"-gd \
+        php"$version"-gmp \
+        php"$version"-igbinary \
+        php"$version"-imagick \
+        php"$version"-imap \
+        php"$version"-interbase \
+        php"$version"-intl \
+        php"$version"-ldap \
+        php"$version"-mbstring \
+        php"$version"-memcache \
+        php"$version"-memcached \
+        php"$version"-mongodb \
+        php"$version"-mysql \
+        php"$version"-odbc \
+        php"$version"-opcache \
+        php"$version"-pgsql \
+        php"$version"-phpdbg \
+        php"$version"-pspell \
+        php"$version"-readline \
+        php"$version"-redis \
+        php"$version"-snmp \
+        php"$version"-soap \
+        php"$version"-sqlite3 \
+        php"$version"-sybase \
+        php"$version"-tidy \
+        php"$version"-xdebug \
+        php"$version"-xml \
+        php"$version"-xsl \
+        php"$version"-yaml \
+        php"$version"-zip \
+        php"$version"-zmq
 
     if [[ $version == "5.6" || $version == "7.0" || $version == "7.1" ]]; then
-        apt-fast install -y --no-install-recommends php$version-mcrypt php$version-recode
+        apt-fast install -y --no-install-recommends php"$version"-mcrypt php"$version"-recode
     fi
 
     if [[ $version == "7.2" || $version == "7.3" ]]; then
-        apt-fast install -y --no-install-recommends php$version-recode
+        apt-fast install -y --no-install-recommends php"$version"-recode
     fi
 
     if [[ $version != "8.0" ]]; then
-        apt-fast install -y --no-install-recommends php$version-xmlrpc php$version-json
+        apt-fast install -y --no-install-recommends php"$version"-xmlrpc php"$version"-json
     fi
 
     if [[ $version != "5.6" && $version != "7.0" ]]; then
-        apt-fast install -y --no-install-recommends php$version-pcov
+        apt-fast install -y --no-install-recommends php"$version"-pcov
 
         # Disable PCOV, as Xdebug is enabled by default
         # https://github.com/krakjoe/pcov#interoperability
-        phpdismod -v $version pcov
+        phpdismod -v "$version" pcov
     fi
 
     if [[ $version = "7.0" || $version = "7.1" ]]; then
-        apt-fast install -y --no-install-recommends php$version-sodium
+        apt-fast install -y --no-install-recommends php"$version"-sodium
     fi
 done
 
@@ -101,6 +104,7 @@ sudo mv composer.phar /usr/bin/composer
 php -r "unlink('composer-setup.php');"
 
 # Add composer bin folder to path
+# shellcheck disable=SC2016
 prependEtcEnvironmentPath '$HOME/.config/composer/vendor/bin'
 
 #Create composer folder for user to preserve folder permissions

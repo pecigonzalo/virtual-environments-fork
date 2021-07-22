@@ -1,6 +1,6 @@
 Describe "PHP" -Skip:(Test-IsUbuntu16) {
 
-    [array]$testCases = (Get-ToolsetContent).php.versions | ForEach-Object { @{phpVersion = $_} }
+    [array]$testCases = (Get-ToolsetContent).php.versions | ForEach-Object { @{phpVersion = $_ } }
 
     It "php <phpVersion>" -TestCases $testCases {
         param (
@@ -40,7 +40,7 @@ Describe "Swift" {
 }
 
 Describe "PipxPackages" -Skip:(Test-IsUbuntu16) {
-    [array]$testCases = (Get-ToolsetContent).pipx | ForEach-Object { @{package=$_.package; cmd = $_.cmd} }
+    [array]$testCases = (Get-ToolsetContent).pipx | ForEach-Object { @{package = $_.package; cmd = $_.cmd } }
 
     It "<package>" -TestCases $testCases {
         "$cmd --version" | Should -ReturnZeroExitCode

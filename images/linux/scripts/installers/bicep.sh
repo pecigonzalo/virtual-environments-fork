@@ -3,8 +3,8 @@
 ##  File:  bicep.sh
 ##  Desc:  Installs bicep cli
 ################################################################################
-
-source $HELPER_SCRIPTS/install.sh
+# shellcheck source=/images/linux/scripts/helpers/install.sh
+source "$HELPER_SCRIPTS"/install.sh
 
 # Install Bicep CLI
 download_with_retries "https://github.com/Azure/bicep/releases/latest/download/bicep-linux-x64" "." "bicep.bin"

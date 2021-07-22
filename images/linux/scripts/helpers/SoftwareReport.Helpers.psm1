@@ -2,7 +2,7 @@ function Take-OutputPart {
     param (
         [Parameter(ValueFromPipeline)]
         [string] $toolOutput,
-        [string] $Delimiter = " ",
+        [string] $Delimiter = ' ',
         [int[]] $Part
     )
     $parts = $toolOutput.Split($Delimiter, [System.StringSplitOptions]::RemoveEmptyEntries)
@@ -28,9 +28,9 @@ function Get-LinkTarget {
     )
     $link = Get-Item $inputPath | Select-Object -ExpandProperty Target
     if ($link) {
-      return " -> $link"
+        return " -> $link"
     }
-    return ""
+    return ''
 }
 
 function Get-PathWithLink {
@@ -41,8 +41,7 @@ function Get-PathWithLink {
     return "${inputPath}${link}"
 }
 
-function Get-CachedToolInstances
-{
+function Get-CachedToolInstances {
     <#
     .SYNOPSIS
     Returns hastable of installed cached tools.
@@ -72,8 +71,7 @@ function Get-CachedToolInstances
 
     # Get all installed versions from TOOLSDIRECTORY folder
     $versions = Get-ChildItem $toolPath | Sort-Object { [System.Version]$_.Name }
-    foreach ($version in $versions)
-    {
+    foreach ($version in $versions) {
         $instanceInfo = @{}
 
         # Create instance hashtable
@@ -81,19 +79,17 @@ function Get-CachedToolInstances
         [string]$instanceInfo.Version = $version.Name
 
         # Get all architectures for current version
-        [array]$instanceInfo.Architecture_Array = Get-ChildItem $version.FullName -Name -Directory | Where-Object { $_ -match "^x[0-9]{2}$" }
-        [string]$instanceInfo.Architecture = $instanceInfo.Architecture_Array -Join ", "
+        [array]$instanceInfo.Architecture_Array = Get-ChildItem $version.FullName -Name -Directory | Where-Object { $_ -match '^x[0-9]{2}$' }
+        [string]$instanceInfo.Architecture = $instanceInfo.Architecture_Array -Join ', '
 
         # Add (default) postfix to version name, in case if current version is in environment path
-        if (-not ([string]::IsNullOrEmpty($VersionCommand)))
-        {
+        if (-not ([string]::IsNullOrEmpty($VersionCommand))) {
             $defaultVersion = $(& ($Name.ToLower()) $VersionCommand 2>&1)
-            $defaultToolVersion = $defaultVersion   | Select-String -Pattern "\d+\.\d+\.\d+" -AllMatches `
-                                                    | ForEach-Object { $_.Matches.Value }
+            $defaultToolVersion = $defaultVersion | Select-String -Pattern '\d+\.\d+\.\d+' -AllMatches `
+            | ForEach-Object { $_.Matches.Value }
 
-            if ([version]$version.Name -eq [version]$defaultToolVersion)
-            {
-                $instanceInfo.Version += " (Default)"
+            if ([version]$version.Name -eq [version]$defaultToolVersion) {
+                $instanceInfo.Version += ' (Default)'
             }
         }
 
@@ -109,4 +105,3 @@ function Get-AptSourceRepository {
     $sourceUrl = Get-Content "$PSScriptRoot/../helpers/apt-sources.txt" | Select-String -Pattern $PackageName | Take-OutputPart -Part (1..3)
     return $sourceUrl
 }
-

@@ -4,9 +4,12 @@
 ##  Desc:  Installs Java and related tooling (Ant, Gradle, Maven)
 ################################################################################
 
-source $HELPER_SCRIPTS/install.sh
-source $HELPER_SCRIPTS/os.sh
-source $HELPER_SCRIPTS/etc-environment.sh
+# shellcheck source=/images/linux/scripts/helpers/install.sh
+source "$HELPER_SCRIPTS"/install.sh
+# shellcheck source=/images/linux/scripts/helpers/os.sh
+source "$HELPER_SCRIPTS"/os.sh
+# shellcheck source=/images/linux/scripts/helpers/etc-environment.sh
+source "$HELPER_SCRIPTS"/etc-environment.sh
 
 JAVA_VERSIONS_LIST=$(get_toolset_value '.java.versions | .[]')
 DEFAULT_JDK_VERSION=$(get_toolset_value '.java.default')

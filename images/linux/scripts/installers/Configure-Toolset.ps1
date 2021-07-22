@@ -6,8 +6,7 @@
 
 Import-Module "$env:HELPER_SCRIPTS/Tests.Helpers.psm1" -DisableNameChecking
 
-function Get-ToolsetToolFullPath
-{
+function Get-ToolsetToolFullPath {
     param
     (
         [Parameter(Mandatory)] [string] $ToolName,
@@ -17,52 +16,47 @@ function Get-ToolsetToolFullPath
 
     $toolPath = Join-Path -Path $env:AGENT_TOOLSDIRECTORY -ChildPath $toolName
     $toolPathVersion = Join-Path -Path $toolPath -ChildPath $toolVersion
-    $foundVersion = Get-Item $toolPathVersion | Sort-Object -Property {[version]$_.name} -Descending | Select-Object -First 1
+    $foundVersion = Get-Item $toolPathVersion | Sort-Object -Property { [version]$_.name } -Descending | Select-Object -First 1
     $installationDir = Join-Path -Path $foundVersion -ChildPath $toolArchitecture
     return $installationDir
 }
 
-function Add-EnvironmentVariable
-{
-    param
-    (
+function Add-EnvironmentVariable {
+    param(
         [Parameter(Mandatory)] [string] $Name,
         [Parameter(Mandatory)] [string] $Value,
-        [string] $FilePath = "/etc/environment"
+        [string] $FilePath = '/etc/environment'
     )
 
-    $envVar = "{0}={1}" -f $name, $value
+    $envVar = '{0}={1}' -f $name, $value
     Tee-Object -InputObject $envVar -FilePath $filePath -Append
 }
 
-$ErrorActionPreference = "Stop"
+$ErrorActionPreference = 'Stop'
 
-Write-Host "Configure toolset tools environment..."
+Write-Host 'Configure toolset tools environment...'
 $toolsEnvironment = @{
     go = @{
-        command = "ln -s {0}/bin/* /usr/bin/"
-        variableTemplate = "GOROOT_{0}_{1}_X64"
+        command          = 'ln -s {0}/bin/* /usr/bin/'
+        variableTemplate = 'GOROOT_{0}_{1}_X64'
     }
 }
 
 $toolset = Get-Content -Path "$env:INSTALLER_SCRIPT_FOLDER/toolset.json" -Raw | ConvertFrom-Json
 
-foreach ($tool in $toolset.toolcache)
-{
+foreach ($tool in $toolset.toolcache) {
     $toolName = $tool.name
     $toolArch = $tool.arch
     $toolEnvironment = $toolsEnvironment[$toolName]
 
-    if (-not $toolEnvironment)
-    {
+    if (-not $toolEnvironment) {
         continue
     }
 
-    foreach ($toolVersion in $tool.versions)
-    {
+    foreach ($toolVersion in $tool.versions) {
         Write-Host "Set $toolName $toolVersion environment variable..."
         $toolPath = Get-ToolsetToolFullPath -ToolName $toolName -ToolVersion $toolVersion -ToolArchitecture $toolArch
-        $envName = $toolEnvironment.variableTemplate -f $toolVersion.split(".")
+        $envName = $toolEnvironment.variableTemplate -f $toolVersion.split('.')
 
         # Add environment variable name=value
         Add-EnvironmentVariable -Name $envName -Value $toolPath
@@ -70,26 +64,23 @@ foreach ($tool in $toolset.toolcache)
 
     # Invoke command and add env variable for the default tool version
     $toolDefVersion = $tool.default
-    if (-not $toolDefVersion)
-    {
+    if (-not $toolDefVersion) {
         continue
     }
 
     $envDefName = $toolEnvironment.defaultVariable
     $toolPath = Get-ToolsetToolFullPath -ToolName $toolName -ToolVersion $toolDefVersion -ToolArchitecture $toolArch
 
-    if ($envDefName)
-    {
+    if ($envDefName) {
         Write-Host "Set default $envDefName for $toolName $toolDefVersion environment variable..."
         Add-EnvironmentVariable -Name $envDefName -Value $toolPath
     }
 
-    if ($toolEnvironment.command)
-    {
+    if ($toolEnvironment.command) {
         $command = $toolEnvironment.command -f $toolPath
         Write-Host "Invoke $command command for default $toolName $toolDefVersion..."
         Invoke-Expression -Command $command
     }
 }
 
-Invoke-PesterTests -TestFile "Toolset" -TestName "Toolset"
+Invoke-PesterTests -TestFile 'Toolset' -TestName 'Toolset'
