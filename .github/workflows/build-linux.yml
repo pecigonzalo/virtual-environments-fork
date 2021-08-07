@@ -26,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Build ${{ matrix.version }}
+      - name: Clean runner
         run: |
           echo "::group::cleanup"
           sudo swapoff -a
@@ -46,8 +46,8 @@ jobs:
           sudo rm -rf /usr/share/java
           #sudo docker system prune -a -f
           sudo rm -rf /home/linuxbrew
-          #ver=$(echo "20.04" | sed 's|\.||g')
-          #wget -qO "toolset.json" "https://raw.githubusercontent.com/actions/virtual-environments/main/images/linux/toolsets/toolset-${ver}.json"
+          sudo apt-get -yq update
+          #wget -qO "toolset.json" "https://raw.githubusercontent.com/actions/virtual-environments/main/images/linux/toolsets/toolset-2004.json"
           #common_packages=$(jq -r ".apt.common_packages[]" "toolset.json")
           #cmd_packages=$(jq -r ".apt.cmd_packages[]" "toolset.json")
           #sudo apt-get purge -f -y ant
@@ -55,17 +55,15 @@ jobs:
           #sudo apt-get purge -f -y ${cmd_packages[@]}
           sudo apt-get -y autoremove
           sudo apt-get -y clean
-          #sudo apt-get update
           df -h
           echo "::endgroup::"
-          cd images/linux/
+
+      - name: Build `ubuntu:full-${{ matrix.version }}`
+        run: |
           echo "::group::packer"
           packer build -var "image_version=$(date +%Y%m%d)" ubuntu${{ matrix.version }}.json
           echo "::endgroup::"
+        working-directory: images/linux/
         env:
           GHCR_USERNAME: ${{ github.repository_owner }}
           GHCR_PASSWORD: ${{ github.token }}
-          #DCKR_USERNAME: ${{ secrets.DOCKER_USER }}
-          #DCKR_PASSWORD: ${{ secrets.DOCKER_PASS }}
-          #QUAY_USERNAME: ${{ secrets.QUAY_USER }}
-          #QUAY_PASSWORD: ${{ secrets.QUAY_PASS }}
