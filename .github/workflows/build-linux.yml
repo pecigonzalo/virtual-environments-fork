@@ -29,33 +29,52 @@ jobs:
       - name: Clean runner
         run: |
           echo "::group::cleanup"
+          paths=(
+              "/opt"
+              "/usr/local/share/boost"
+              "$AGENT_TOOLSDIRECTORY"
+              "/usr/share/dotnet/"
+              "$ANDROID_SDK_ROOT"
+              "/usr/local/lib/android"
+              "$SWIFT_PATH"
+              "/usr/share/swift"
+              "/usr/share/rust"
+              "/usr/local/share/vcpkg"
+              "/usr/share/miniconda"
+              /usr/share/apache-maven-*
+              "/usr/lib/node_modules"
+              "/usr/share/sbt"
+              "/usr/share/java"
+              /usr/share/gradle-*
+              "/usr/lib/jvm"
+              "/usr/share/ant"
+              "/home/linuxbrew"
+              "/usr/local/share/chrome_driver"
+              "/usr/local/share/gecko_driver"
+              "/usr/local/share/chromium"
+              /usr/local/share/phantomjs*
+              "/usr/local/share/powershell"
+              /usr/local/share/cmake-*
+              "/usr/local/share/.cache"
+              /usr/share/ImageMagick*
+              /usr/share/az_*
+              /usr/share/mono*
+              /usr/share/php*
+              "/usr/local/lib"
+          )
           sudo swapoff -a
           sudo rm -f /swapfile
-          sudo rm -rf "/usr/local/share/boost"
-          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
-          sudo rm -rf /usr/share/dotnet/
-          sudo rm -rf "$ANDROID_SDK_ROOT"
-          sudo rm -rf /usr/local/lib/android
-          sudo rm -rf "$SWIFT_PATH"
-          sudo rm -rf /usr/share/swift
-          sudo rm -rf /usr/share/rust
-          sudo rm -rf /usr/local/share/vcpkg
-          sudo rm -rf /usr/share/miniconda
-          sudo rm -rf /usr/lib/node_modules
-          sudo rm -rf /usr/share/sbt
-          sudo rm -rf /usr/share/java
+          sudo rm -rf ${paths[@]}
+          ls -lah /usr/local/share
+          ls -lah /usr/share
+          ls -lah /usr/lib
           #sudo docker system prune -a -f
-          sudo rm -rf /home/linuxbrew
           sudo apt-get -yq update
-          #wget -qO "toolset.json" "https://raw.githubusercontent.com/actions/virtual-environments/main/images/linux/toolsets/toolset-2004.json"
-          #common_packages=$(jq -r ".apt.common_packages[]" "toolset.json")
-          #cmd_packages=$(jq -r ".apt.cmd_packages[]" "toolset.json")
-          #sudo apt-get purge -f -y ant
-          #sudo apt-get purge -f -y ${common_packages[@]}
-          #sudo apt-get purge -f -y ${cmd_packages[@]}
           sudo apt-get -y autoremove
           sudo apt-get -y clean
-          df -h
+          #sudo apt-get update
+          df -H -a
+          ls -lahR /mnt
           echo "::endgroup::"
 
       - name: Build `ubuntu:full-${{ matrix.version }}`
