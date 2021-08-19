@@ -7,7 +7,7 @@
 # Ubuntu 18.04.5 LTS
 
 - Linux kernel version: 5.4.0-1055-azure
-- Image Version: 20210810.1
+- Image Version: 20210816.1
 
 ## Installed Software
 
@@ -24,7 +24,7 @@
 - Kotlin 1.5.21-release-314
 - Mono 6.12.0.122 (apt source repository: https://download.mono-project.com/repo/ubuntu stable-bionic main)
 - MSBuild 16.6.0.15201 (from /usr/lib/mono/msbuild/15.0/bin/MSBuild.dll)
-- Node 14.17.4
+- Node 14.17.5
 - Perl 5.26.1
 - Python 2.7.17
 - Python3 3.6.9
@@ -42,7 +42,7 @@
 - Pip3 9.0.1
 - Pipx 0.16.4
 - RubyGems 2.7.6
-- Vcpkg (build from master \<be45664>)
+- Vcpkg (build from master \<6bc4362>)
 - Yarn 1.22.11
 
 #### Environment variables
@@ -61,16 +61,12 @@
 
 ### Tools
 
-<<<<<<< HEAD
-
-- # Ansible 2.11.2
 - Ansible 2.11.3
-  > > > > > > > b28c62d3f17b3d565be8738cba029c8f8c03cc2b
 - apt-fast 1.9.11
 - AzCopy 10.11.0 (available by `azcopy` and `azcopy10` aliases)
 - Bazel 4.1.0
 - Bazelisk 1.10.1
-- Bicep 0.4.451
+- Bicep 0.4.613
 - Buildah 1.19.6 (apt source repository: https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable)
 - CMake 3.21.1
 - CodeQL Action Bundle 2.5.9
@@ -83,7 +79,7 @@
 - Git-ftp 1.3.1
 - Haveged 1.9.1
 - Heroku 7.56.1
-- HHVM (HipHop VM) 4.121.0
+- HHVM (HipHop VM) 4.122.0
 - jq 1.5
 - Kind 0.11.1
 - Kubectl 1.22.0
@@ -94,16 +90,12 @@
 - Minikube 1.22.0
 - Newman 5.2.4
 - nvm 0.38.0
-  <<<<<<< HEAD
-- OpenSSL 1.1.1 11 Sep 2018
-- # Packer 1.7.3
 - OpenSSL 1.1.1 11 Sep 2018
 - Packer 1.7.4
-  > > > > > > > b28c62d3f17b3d565be8738cba029c8f8c03cc2b
 - PhantomJS 2.1.1
 - Podman 3.0.1 (apt source repository: https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable)
-- Pulumi 3.9.1
-- R 4.1.0
+- Pulumi 3.10.1
+- R 4.1.1
 - Skopeo 1.2.2 (apt source repository: https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable)
 - Sphinx Open Source Search Server 2.2.11
 - SVN 1.9.7
@@ -114,27 +106,16 @@
 
 ### CLI Tools
 
-<<<<<<< HEAD
-
-<<<<<<< HEAD
-
-- Alibaba Cloud CLI 3.0.81
-- # AWS CLI 1.20.1
-- Alibaba Cloud CLI 3.0.82
-- AWS CLI 1.20.6
-  > > > > > > > b28c62d3f17b3d565be8738cba029c8f8c03cc2b
-- # AWS CLI Session manager plugin 1.2.205.0
 - Alibaba Cloud CLI 3.0.85
-- AWS CLI 1.20.17
+- AWS CLI 1.20.21
 - AWS CLI Session manager plugin 1.2.234.0
-  > > > > > > > 773f03950109be63099c757145fba3e0109fb5a0
 - AWS SAM CLI 1.27.2
-- Azure CLI (azure-cli) 2.27.0 (installation method: https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt)
+- Azure CLI (azure-cli) 2.27.1 (installation method: https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt)
 - Azure CLI (azure-devops) 0.20.0
 - GitHub CLI 1.14.0
-- Google Cloud SDK 351.0.0 (apt source repository: https://packages.cloud.google.com/apt)
+- Google Cloud SDK 352.0.0 (apt source repository: https://packages.cloud.google.com/apt)
 - Hub CLI 2.14.2
-- Netlify CLI 6.0.9
+- Netlify CLI 6.3.5
 - OpenShift CLI 4.8.4
 - ORAS CLI 0.12.0
 - Vercel CLI 23.1.2
@@ -149,30 +130,11 @@
 
 ### PHP
 
-<<<<<<< HEAD
-
-| Tool | Version                           |
-| ---- | --------------------------------- |
-| PHP  | 7.1.33 7.2.34 7.3.29 7.4.21 8.0.8 |
-
-<<<<<<< HEAD
-| Composer | 2.1.3 |
-| PHPUnit | 8.5.17 |
-
-=======
-| Composer | 2.1.5 |
-| PHPUnit | 8.5.18 |
-
-> > > > > > > b28c62d3f17b3d565be8738cba029c8f8c03cc2b
-
-=======
-| Tool | Version |
+| Tool     | Version                           |
 | -------- | --------------------------------- |
-| PHP | 7.1.33 7.2.34 7.3.29 7.4.22 8.0.9 |
-| Composer | 2.1.5 |
-| PHPUnit | 8.5.19 |
-
-> > > > > > > 773f03950109be63099c757145fba3e0109fb5a0
+| PHP      | 7.1.33 7.2.34 7.3.29 7.4.22 8.0.9 |
+| Composer | 2.1.5                             |
+| PHPUnit  | 8.5.19                            |
 
 ```
     Both Xdebug and PCOV extensions are installed, but only Xdebug is enabled.
@@ -182,55 +144,30 @@
 
 - Cabal 3.4.0.0
 - GHC 9.0.1 (apt source repository: ppa:hvr/ghc)
-- GHCup 0.1.16.1
+- GHCup 0.1.16.2
 - Stack 2.7.3
 
 ### Rust Tools
 
-<<<<<<< HEAD
-
-- Cargo 1.53.0
-- Rust 1.53.0
-- # Rustdoc 1.53.0
 - Cargo 1.54.0
 - Rust 1.54.0
 - Rustdoc 1.54.0
-  > > > > > > > 773f03950109be63099c757145fba3e0109fb5a0
 - Rustup 1.24.3
 
 #### Packages
 
-<<<<<<< HEAD
-
-- # Bindgen 0.58.1
 - Bindgen 0.59.1
-  <<<<<<< HEAD
-  > > > > > > > b28c62d3f17b3d565be8738cba029c8f8c03cc2b
-- Cargo audit 0.15.0
-- # Cargo clippy 0.1.53
 - Cargo audit 0.14.1
 - Cargo clippy 0.1.54
-  > > > > > > > 773f03950109be63099c757145fba3e0109fb5a0
 - Cargo outdated 0.9.17
 - Cbindgen 0.20.0
 - Rustfmt 1.4.37
 
 ### Browsers and Drivers
 
-<<<<<<< HEAD
-
-<<<<<<< HEAD
-
-- Google Chrome 91.0.4472.164
-- # ChromeDriver 91.0.4472.101
-- Google Chrome 92.0.4515.107
-- ChromeDriver 92.0.4515.43
-  > > > > > > > b28c62d3f17b3d565be8738cba029c8f8c03cc2b
-- # Mozilla Firefox 90.0
 - Google Chrome 92.0.4515.131
 - ChromeDriver 92.0.4515.107
-- Mozilla Firefox 90.0.2
-  > > > > > > > 773f03950109be63099c757145fba3e0109fb5a0
+- Mozilla Firefox 91.0
 - Geckodriver 0.29.1
 - Chromium 92.0.4515.0
 
@@ -243,29 +180,17 @@
 
 ### .NET Core SDK
 
-- 2.1.302 2.1.403 2.1.524 2.1.617 2.1.701 2.1.816 3.1.117 3.1.202 3.1.302 3.1.411 5.0.104 5.0.205 5.0.302
+- 2.1.302 2.1.403 2.1.525 2.1.617 2.1.701 2.1.817 3.1.118 3.1.202 3.1.302 3.1.412 5.0.104 5.0.206 5.0.302 5.0.303 5.0.400
 
 ### Databases
 
-<<<<<<< HEAD
-
-<<<<<<< HEAD
-
-- # MongoDB 4.4.7 (apt source repository: https://repo.mongodb.org/apt/ubuntu)
-- MongoDB 5.0.1 (apt source repository: https://repo.mongodb.org/apt/ubuntu)
-  > > > > > > > # b28c62d3f17b3d565be8738cba029c8f8c03cc2b
 - MongoDB 5.0.2 (apt source repository: https://repo.mongodb.org/apt/ubuntu)
-  > > > > > > > 773f03950109be63099c757145fba3e0109fb5a0
-- Postgre SQL 13.3 (apt source repository: https://apt.postgresql.org/pub/repos/apt/)
+- Postgre SQL 13.4 (apt source repository: https://apt.postgresql.org/pub/repos/apt/)
 - sqlite3 3.22.0
 
 #### MySQL
 
-<<<<<<< HEAD
-
-- # MySQL 5.7.34
 - MySQL 5.7.35
-  > > > > > > > 773f03950109be63099c757145fba3e0109fb5a0
 - MySQL Server (user:root password:root)
 
 ```
@@ -274,11 +199,7 @@
 
 #### MS SQL Server Client Tools
 
-<<<<<<< HEAD
-
-- # sqlcmd 17.7.0001.1
 - sqlcmd 17.8.0001.1
-  > > > > > > > 773f03950109be63099c757145fba3e0109fb5a0
 - SqlPackage 15.0.5084.2
 
 ### Cached Tools
@@ -292,8 +213,8 @@
 #### Node.js
 
 - 10.24.1
-- 12.22.4
-- 14.17.4
+- 12.22.5
+- 14.17.5
 
 #### PyPy
 
@@ -327,7 +248,7 @@
 
 ### PowerShell Tools
 
-- PowerShell 7.1.3
+- PowerShell 7.1.4
 
 #### PowerShell Modules
 
@@ -376,67 +297,24 @@
 
 ### Cached Docker images
 
-<<<<<<< HEAD
-
 | Repository:Tag         | Digest                                                                  | Created    |
 | ---------------------- | ----------------------------------------------------------------------- | ---------- |
-| alpine:3.11            | sha256:20117524da64d995fd769f0aa3d7cfe2040518426f4b238f43e8373f4aa56c06 | 2021-04-14 |
-| alpine:3.12            | sha256:87703314048c40236c6d674424159ee862e2b96ce1c37c62d877e21ed27a387e | 2021-04-14 |
-| alpine:3.13            | sha256:f51ff2d96627690d62fee79e6eecd9fa87429a38142b5df8a3bfbb26061df7fc | 2021-04-14 |
-| buildpack-deps:buster  | sha256:128203abc1feabf1e0b2bef26a23860a7283770d25fcd3cf30277e1dda4909f1 | 2021-06-23 |
-| buildpack-deps:stretch | sha256:04f933352c6a3e46933907f5a7fb6f37134e027207f5de2d3c234bfec43d0d72 | 2021-06-23 |
-| debian:10              | sha256:dcb20da8d9d73c9dab5059668852555c171d40cdec297da845da9c929b70e0b1 | 2021-06-23 |
-| debian:9               | sha256:8afcdd92f29e1706625631df94ecdfe3bdeb919bb2c6ee685803d245b75ee45a | 2021-06-23 |
+| alpine:3.11            | sha256:6cf3d8abc08cf3792d590152d7a4628ec827621f55b1d3150383f5f39335d6eb | 2021-04-14 |
+| alpine:3.12            | sha256:de25c7fc6c4f3a27c7f0c2dff454e4671823a34d88abd533f210848d527e0fbb | 2021-04-14 |
+| alpine:3.13            | sha256:1d30d1ba3cb90962067e9b29491fbd56997979d54376f23f01448b5c5cd8b462 | 2021-04-14 |
+| buildpack-deps:buster  | sha256:7021538d13a8de5cd15cf5fd72b95b8710831ed7029ebc3282dffd570cdf3818 | 2021-07-22 |
+| buildpack-deps:stretch | sha256:d8c71a24bdc64d5dadc7d6ba748e55b01c510d292f94b1afc5fb95ee38dc5f4e | 2021-07-22 |
+| debian:10              | sha256:cc58a29c333ee594f7624d968123429b26916face46169304f07580644dde6b2 | 2021-07-22 |
+| debian:9               | sha256:06f9296409de8cfecaff43aaee6d608ed48a95c0cac0da2a418ff526acedf67b | 2021-07-22 |
 | node:10                | sha256:59531d2835edd5161c8f9512f9e095b1836f7a1fcb0ab73e005ec46047384911 | 2021-04-10 |
 | node:10-alpine         | sha256:dc98dac24efd4254f75976c40bce46944697a110d06ce7fa47e7268470cf2e28 | 2021-04-14 |
-| node:12                | sha256:3f646f48001e2cd732a4c0291e1fa5bfcadaaafc3a41227a0bcc76c998c2cee6 | 2021-07-07 |
-| node:12-alpine         | sha256:05328aa871f251b0643b8dcaa01034f126a8343b51ef302de207ad153a6b6232 | 2021-07-07 |
-| node:14                | sha256:0c558991de47e614588a61f9cc90afdcf034c6fc641d3ab650c9570a98b37605 | 2021-07-07 |
-| node:14-alpine         | sha256:fb6cb918cc72869bd625940f42a7d8ae035c4e786d08187b94e8b91c6a534dfd | 2021-07-07 |
-| ubuntu:16.04           | sha256:1b733ff6c7c7aac32101a35cb2c6399ca8c399a9f6de62a386abe26c65b59b9e | 2021-06-17 |
-| ubuntu:18.04           | sha256:3b8692dc4474d4f6043fae285676699361792ce1828e22b1b57367b5c05457e3 | 2021-07-13 |
-| ubuntu:20.04           | sha256:b3e2e47d016c08b3396b5ebe06ab0b711c34e7f37b98c9d37abe794b71cea0a2 | 2021-07-13 |
-
-=======
-| Repository:Tag | Digest | Created |
-| ---------------------- | ------------------------------------------------------------------------ | ---------- |
-<<<<<<< HEAD
-| alpine:3.11 | sha256:20117524da64d995fd769f0aa3d7cfe2040518426f4b238f43e8373f4aa56c06 | 2021-04-14 |
-| alpine:3.12 | sha256:87703314048c40236c6d674424159ee862e2b96ce1c37c62d877e21ed27a387e | 2021-04-14 |
-| alpine:3.13 | sha256:f51ff2d96627690d62fee79e6eecd9fa87429a38142b5df8a3bfbb26061df7fc | 2021-04-14 |
-| buildpack-deps:buster | sha256:7021538d13a8de5cd15cf5fd72b95b8710831ed7029ebc3282dffd570cdf3818 | 2021-07-22 |
-| buildpack-deps:stretch | sha256:d8c71a24bdc64d5dadc7d6ba748e55b01c510d292f94b1afc5fb95ee38dc5f4e | 2021-07-22 |
-| debian:10 | sha256:cc58a29c333ee594f7624d968123429b26916face46169304f07580644dde6b2 | 2021-07-22 |
-| debian:9 | sha256:06f9296409de8cfecaff43aaee6d608ed48a95c0cac0da2a418ff526acedf67b | 2021-07-22 |
-| node:10 | sha256:59531d2835edd5161c8f9512f9e095b1836f7a1fcb0ab73e005ec46047384911 | 2021-04-10 |
-| node:10-alpine | sha256:dc98dac24efd4254f75976c40bce46944697a110d06ce7fa47e7268470cf2e28 | 2021-04-14 |
-| node:12 | sha256:b37688949b774df8a3474e9f2a26be5cdaccc97c28b99e06a8a07ec9f29819bc | 2021-07-22 |
-| node:12-alpine | sha256:05328aa871f251b0643b8dcaa01034f126a8343b51ef302de207ad153a6b6232 | 2021-07-07 |
-| node:14 | sha256:976c9107158a1c85ab0702aec5b1d56bbb85de493ca50794e545a0271421e028 | 2021-07-22 |
-| node:14-alpine | sha256:fb6cb918cc72869bd625940f42a7d8ae035c4e786d08187b94e8b91c6a534dfd | 2021-07-07 |
-| ubuntu:16.04 | sha256:1b733ff6c7c7aac32101a35cb2c6399ca8c399a9f6de62a386abe26c65b59b9e | 2021-06-17 |
-| ubuntu:18.04 | sha256:3b8692dc4474d4f6043fae285676699361792ce1828e22b1b57367b5c05457e3 | 2021-07-13 |
-| ubuntu:20.04 | sha256:b3e2e47d016c08b3396b5ebe06ab0b711c34e7f37b98c9d37abe794b71cea0a2 | 2021-07-13 |
-
-> > > > > > > # b28c62d3f17b3d565be8738cba029c8f8c03cc2b
-> > > > > > >
-> > > > > > > | alpine:3.11 | sha256:6cf3d8abc08cf3792d590152d7a4628ec827621f55b1d3150383f5f39335d6eb | 2021-04-14 |
-> > > > > > > | alpine:3.12 | sha256:de25c7fc6c4f3a27c7f0c2dff454e4671823a34d88abd533f210848d527e0fbb | 2021-04-14 |
-> > > > > > > | alpine:3.13 | sha256:1d30d1ba3cb90962067e9b29491fbd56997979d54376f23f01448b5c5cd8b462 | 2021-04-14 |
-> > > > > > > | buildpack-deps:buster | sha256:7021538d13a8de5cd15cf5fd72b95b8710831ed7029ebc3282dffd570cdf3818 | 2021-07-22 |
-> > > > > > > | buildpack-deps:stretch | sha256:d8c71a24bdc64d5dadc7d6ba748e55b01c510d292f94b1afc5fb95ee38dc5f4e | 2021-07-22 |
-> > > > > > > | debian:10 | sha256:cc58a29c333ee594f7624d968123429b26916face46169304f07580644dde6b2 | 2021-07-22 |
-> > > > > > > | debian:9 | sha256:06f9296409de8cfecaff43aaee6d608ed48a95c0cac0da2a418ff526acedf67b | 2021-07-22 |
-> > > > > > > | node:10 | sha256:59531d2835edd5161c8f9512f9e095b1836f7a1fcb0ab73e005ec46047384911 | 2021-04-10 |
-> > > > > > > | node:10-alpine | sha256:dc98dac24efd4254f75976c40bce46944697a110d06ce7fa47e7268470cf2e28 | 2021-04-14 |
-> > > > > > > | node:12 | sha256:4095975f2cc22e310e09dd00274a47d18f6a336a6a230e7f6dced8856184ff77 | 2021-07-30 |
-> > > > > > > | node:12-alpine | sha256:78be4f61c7a0f00cc9da47e3ba2f1bacf9ba85410e8ad2e7de16e1fc4be1b962 | 2021-07-30 |
-> > > > > > > | node:14 | sha256:cd98882c1093f758d09cf6821dc8f96b241073b38e8ed294ca1f9e484743858f | 2021-07-30 |
-> > > > > > > | node:14-alpine | sha256:0c80f9449d2690eef49aad35eeb42ed9f9bbe2742cd4e9766a7be3a1aae2a310 | 2021-07-30 |
-> > > > > > > | ubuntu:16.04 | sha256:6a3ac136b6ca623d6a6fa20a7622f098b2fae1ac05f0114386ef439d8ca89a4a | 2021-07-26 |
-> > > > > > > | ubuntu:18.04 | sha256:7bd7a9ca99f868bf69c4b6212f64f2af8e243f97ba13abb3e641e03a7ceb59e8 | 2021-07-26 |
-> > > > > > > | ubuntu:20.04 | sha256:82becede498899ec668628e7cb0ad87b6e1c371cb8a1e597d83a47fac21d6af3 | 2021-07-26 |
-> > > > > > > 773f03950109be63099c757145fba3e0109fb5a0
+| node:12                | sha256:38dac2d5f70a91c9c68fe284a729cc49e444dad0a7e5388bcaf5c70f645c17e7 | 2021-08-12 |
+| node:12-alpine         | sha256:372e5cc17da5baedf302643c3bb54283dac990942fc816d9f7c12565e89c3265 | 2021-08-12 |
+| node:14                | sha256:adbbb61dab70ea6e5a6c2ad7fba60e4d1047ba98ad1afcd631c15553163b22b7 | 2021-08-12 |
+| node:14-alpine         | sha256:b8d48b515e3049d4b7e9ced6cedbe223c3bc4a3d0fd02332448f3cdb000faee1 | 2021-08-12 |
+| ubuntu:16.04           | sha256:6a3ac136b6ca623d6a6fa20a7622f098b2fae1ac05f0114386ef439d8ca89a4a | 2021-07-26 |
+| ubuntu:18.04           | sha256:7bd7a9ca99f868bf69c4b6212f64f2af8e243f97ba13abb3e641e03a7ceb59e8 | 2021-07-26 |
+| ubuntu:20.04           | sha256:82becede498899ec668628e7cb0ad87b6e1c371cb8a1e597d83a47fac21d6af3 | 2021-07-26 |
 
 ### Installed apt packages
 
@@ -483,7 +361,7 @@
 | mediainfo         | 17.12-1                           |
 | net-tools         | 1.60+git20161116.90da8a0-1ubuntu1 |
 | netcat            | 1.10-41.1                         |
-| openssh-client    | 1:7.6p1-4ubuntu0.3                |
+| openssh-client    | 1:7.6p1-4ubuntu0.5                |
 | p7zip-full        | 16.02+dfsg-6                      |
 | p7zip-rar         | 16.02-2                           |
 | parallel          | 20161222-1                        |
@@ -497,7 +375,7 @@
 | shellcheck        | 0.4.6-1                           |
 | sphinxsearch      | 2.2.11-2                          |
 | sqlite3           | 3.22.0-1ubuntu0.4                 |
-| ssh               | 1:7.6p1-4ubuntu0.3                |
+| ssh               | 1:7.6p1-4ubuntu0.5                |
 | sshpass           | 1.06-1                            |
 | subversion        | 1.9.7-4ubuntu1                    |
 | sudo              | 1.8.21p2-3ubuntu1.4               |
