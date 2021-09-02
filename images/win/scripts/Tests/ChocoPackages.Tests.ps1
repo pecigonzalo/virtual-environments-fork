@@ -4,6 +4,12 @@ Describe "7-Zip" {
     }
 }
 
+Describe "Aria2" {
+    It "Aria2" {
+        "aria2c --version" | Should -ReturnZeroExitCode
+    }
+}
+
 Describe "AzCopy" {
     It "AzCopy" {
         "azcopy --version" | Should -ReturnZeroExitCode
@@ -16,13 +22,13 @@ Describe "Bicep" {
     }
 }
 
-Describe "GitVersion" {
+Describe "GitVersion" -Skip:(Test-IsWin22) {
     It "gitversion is installed" {
         "gitversion /version" | Should -ReturnZeroExitCode
     }
 }
 
-Describe "InnoSetup" {
+Describe "InnoSetup" -Skip:(Test-IsWin22) {
     It "InnoSetup" {
         (Get-Command -Name iscc).CommandType | Should -BeExactly "Application"
     }
@@ -52,7 +58,7 @@ Describe "Packer" {
     }
 }
 
-Describe "Perl" {
+Describe "Perl" -Skip:(Test-IsWin22) {
     It "Perl" {
        "perl --version" | Should -ReturnZeroExitCode
     }
@@ -95,5 +101,13 @@ Describe "Julia" {
 Describe "CMake" {
     It "cmake" {
         "cmake --version" | Should -ReturnZeroExitCode
+    }
+}
+
+Describe "Kotlin" {
+    $kotlinPackages =  @("kotlinc", "kotlinc-js", "kotlinc-jvm")
+
+    It "<toolName> is available" -TestCases ($kotlinPackages | ForEach-Object { @{ toolName = $_ } })  { 
+        "$toolName -version" | Should -ReturnZeroExitCode
     }
 }

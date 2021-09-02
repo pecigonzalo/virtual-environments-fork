@@ -9,7 +9,7 @@ function Get-OSVersion {
 }
 
 function Get-BashVersion {
-    $version = bash -c 'echo ${BASH_VERSION}'
+    $version = bash --% -c 'echo ${BASH_VERSION}'
     return "Bash $version"
 }
 
@@ -76,6 +76,11 @@ function Get-GoVersion {
     $(go version) -match "go(?<version>\d+\.\d+\.\d+)" | Out-Null
     $goVersion = $Matches.Version
     return "Go $goVersion"
+}
+
+function Get-KotlinVersion {
+    $kotlinVersion = $((cmd /c "kotlinc  -version 2>&1") | Out-String).split(" ")[2]
+    return "Kotlin $kotlinVersion"
 }
 
 function Get-PHPVersion {
@@ -271,6 +276,10 @@ function Get-CachedDockerImages {
 
 function Get-CachedDockerImagesTableData {
     $allImages = docker images --digests --format "*{{.Repository}}:{{.Tag}}|{{.Digest}} |{{.CreatedAt}}"
+    if (-not $allImages) {
+        return $null
+    }
+
     $allImages.Split("*") | Where-Object { $_ } | ForEach-Object {
         $parts = $_.Split("|")
         [PSCustomObject] @{
@@ -316,16 +325,21 @@ function Get-PipxVersion {
 }
 
 function Build-PackageManagementEnvironmentTable {
-    return @(
-        @{
-            "Name" = "CONDA"
-            "Value" = $env:CONDA
-        },
+    $envVariables = @(
         @{
             "Name" = "VCPKG_INSTALLATION_ROOT"
             "Value" = $env:VCPKG_INSTALLATION_ROOT
         }
-    ) | ForEach-Object {
+    )
+    if ((Test-IsWin16) -or (Test-IsWin19)) {
+        $envVariables += @(
+            @{
+                "Name" = "CONDA"
+                "Value" = $env:CONDA
+            }
+        )
+    }
+    return $envVariables | ForEach-Object {
         [PSCustomObject] @{
             "Name" = $_.Name
             "Value" = $_.Value
