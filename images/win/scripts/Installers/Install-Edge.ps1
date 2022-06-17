@@ -3,7 +3,10 @@
 ##  Desc:  Install latest stable version of Microsoft Edge browser
 ################################################################################
 
-Choco-Install -PackageName microsoft-edge
+# Installed by default on Windows Server 2022
+if (-not (Test-IsWin22)) {
+    Choco-Install -PackageName microsoft-edge
+}
 
 # Install Microsoft Edge WebDriver
 Write-Host "Install Edge WebDriver..."
@@ -17,19 +20,13 @@ Write-Host "Get the Microsoft Edge WebDriver version..."
 $RegistryPath = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths"
 $EdgePath = (Get-ItemProperty "$RegistryPath\msedge.exe").'(default)'
 [version]$EdgeVersion = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($EdgePath).ProductVersion
-$EdgeDriverVersionUrl = "https://msedgedriver.azureedge.net/LATEST_RELEASE_$($EdgeVersion.Major)"
+$EdgeDriverVersionUrl = "https://msedgedriver.azureedge.net/LATEST_RELEASE_$($EdgeVersion.Major)_WINDOWS"
 
 $EdgeDriverVersionFile = Start-DownloadWithRetry -Url $EdgeDriverVersionUrl -Name "versioninfo.txt" -DownloadPath $EdgeDriverPath
 
 Write-Host "Download Microsoft Edge WebDriver..."
 $EdgeDriverLatestVersion = Get-Content -Path $EdgeDriverVersionFile
 $EdgeDriverArchName = "edgedriver_win64.zip"
-# A temporary workaround to install the previous driver version because 85.0.564.60 for win64 doesn't exist
-if ($EdgeDriverLatestVersion -eq "85.0.564.60")
-{
-    $EdgeDriverLatestVersion = "85.0.564.51"
-    Set-Content -Path $EdgeDriverVersionFile -Value $EdgeDriverLatestVersion
-}
 
 $EdgeDriverDownloadUrl = "https://msedgedriver.azureedge.net/${EdgeDriverLatestVersion}/${EdgeDriverArchName}"
 

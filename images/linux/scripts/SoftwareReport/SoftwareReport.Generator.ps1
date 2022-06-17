@@ -3,7 +3,9 @@ param (
     $OutputDirectory
 )
 
-$ErrorActionPreference = 'Stop'
+$global:ErrorActionPreference = "Stop"
+$global:ErrorView = "NormalView"
+Set-StrictMode -Version Latest
 
 Import-Module MarkdownPS
 Import-Module (Join-Path $PSScriptRoot 'SoftwareReport.Android.psm1') -DisableNameChecking
@@ -41,21 +43,27 @@ $runtimesList = @(
     (Get-BashVersion),
     (Get-CPPVersions),
     (Get-FortranVersions),
-    (Get-ErlangVersion),
-    (Get-ErlangRebar3Version),
-    (Get-MonoVersion),
-    (Get-MsbuildVersion),
     (Get-NodeVersion),
     (Get-PerlVersion),
     (Get-PythonVersion),
     (Get-Python3Version),
     (Get-RubyVersion),
-    (Get-SwiftVersion),
     (Get-JuliaVersion),
-    (Get-KotlinVersion),
     (Get-ClangVersions),
-    (Get-ClangFormatVersions)
+    (Get-ClangFormatVersions),
+    (Get-ClangTidyVersions),
+    (Get-KotlinVersion)
 )
+
+if ((Test-IsUbuntu18) -or (Test-IsUbuntu20)) {
+    $runtimesList += @(
+        (Get-MsbuildVersion),
+        (Get-MonoVersion),
+        (Get-ErlangVersion),
+        (Get-ErlangRebar3Version),
+        (Get-SwiftVersion)
+    )
+}
 
 $markdown += New-MDList -Style Unordered -Lines ($runtimesList | Sort-Object)
 
@@ -63,37 +71,35 @@ $markdown += New-MDHeader 'Package Management' -Level 3
 
 $packageManagementList = @(
     (Get-HomebrewVersion),
-    #(Get-CpanVersion), hangs in docker
+    (Get-CpanVersion),
     (Get-GemVersion),
     (Get-MinicondaVersion),
     (Get-HelmVersion),
     (Get-NpmVersion),
     (Get-YarnVersion),
+    (Get-PipxVersion),
     (Get-PipVersion),
     (Get-Pip3Version),
     (Get-VcpkgVersion)
 )
-
-if (-not (Test-IsUbuntu16)) {
-    $packageManagementList += @(
-        (Get-PipxVersion)
-    )
-}
 
 $markdown += New-MDList -Style Unordered -Lines ($packageManagementList | Sort-Object)
 $markdown += New-MDHeader 'Environment variables' -Level 4
 $markdown += Build-PackageManagementEnvironmentTable | New-MDTable
 $markdown += New-MDNewLine
 
-$markdown += New-MDHeader 'Project Management' -Level 3
-$projectManagementList = @(
-    (Get-AntVersion),
-    (Get-GradleVersion),
-    (Get-MavenVersion),
-    (Get-SbtVersion)
-)
+$markdown += New-MDHeader "Project Management" -Level 3
+$projectManagementList = @()
+if ((Test-IsUbuntu18) -or (Test-IsUbuntu20)) {
+    $projectManagementList += @(
+        (Get-AntVersion),
+        (Get-GradleVersion),
+        (Get-MavenVersion),
+        (Get-SbtVersion)
+    )
+}
 
-if (Test-IsUbuntu20) {
+if ((Test-IsUbuntu20) -or (Test-IsUbuntu22)) {
     $projectManagementList += @(
         (Get-LernaVersion)
     )
@@ -107,51 +113,55 @@ $toolsList = @(
     (Get-AzCopyVersion),
     (Get-BazelVersion),
     (Get-BazeliskVersion),
+    (Get-BicepVersion),
     (Get-CodeQLBundleVersion),
     (Get-CMakeVersion),
     (Get-DockerMobyClientVersion),
     (Get-DockerMobyServerVersion),
-    (Get-DockerComposeVersion),
+    (Get-DockerComposeV1Version),
+    (Get-DockerComposeV2Version),
     (Get-DockerBuildxVersion),
+    (Get-DockerAmazonECRCredHelperVersion),
+    (Get-BuildahVersion),
+    (Get-PodManVersion),
+    (Get-SkopeoVersion),
     (Get-GitVersion),
     (Get-GitLFSVersion),
     (Get-GitFTPVersion),
     (Get-HavegedVersion),
     (Get-HerokuVersion),
-    (Get-HHVMVersion),
+    (Get-LeiningenVersion),
     (Get-SVNVersion),
     (Get-JqVersion),
     (Get-YqVersion),
     (Get-KindVersion),
     (Get-KubectlVersion),
     (Get-KustomizeVersion),
-    (Get-LeiningenVersion),
     (Get-MediainfoVersion),
     (Get-HGVersion),
     (Get-MinikubeVersion),
     (Get-NewmanVersion),
+    (Get-NVersion),
     (Get-NvmVersion),
     (Get-OpensslVersion),
     (Get-PackerVersion),
-    (Get-PhantomJSVersion),
+    (Get-ParcelVersion),
     (Get-PulumiVersion),
     (Get-RVersion),
     (Get-SphinxVersion),
     (Get-TerraformVersion),
+    (Get-YamllintVersion),
     (Get-ZstdVersion)
 )
 
-if (-not (Test-IsUbuntu16)) {
+if ((Test-IsUbuntu18) -or (Test-IsUbuntu20)) {
     $toolsList += @(
-        (Get-BicepVersion),
-        (Get-BuildahVersion),
-        (Get-PodManVersion),
-        (Get-SkopeoVersion),
-        (Get-YamllintVersion)
+        (Get-PhantomJSVersion),
+        (Get-HHVMVersion)
     )
 }
 
-if (Test-IsUbuntu20) {
+if ((Test-IsUbuntu20) -or (Test-IsUbuntu22)) {
     $toolsList += (Get-FastlaneVersion)
 }
 
@@ -179,15 +189,13 @@ $markdown += New-MDHeader 'Java' -Level 3
 $markdown += Get-JavaVersions | New-MDTable
 $markdown += New-MDNewLine
 
-if (Test-IsUbuntu20) {
-    $markdown += New-MDHeader 'GraalVM' -Level 3
+if ((Test-IsUbuntu20) -or (Test-IsUbuntu22)) {
+    $markdown += New-MDHeader "GraalVM" -Level 3
     $markdown += Build-GraalVMTable | New-MDTable
     $markdown += New-MDNewLine
 }
 
-if (-not (Test-IsUbuntu16)) {
-    $markdown += Build-PHPSection
-}
+$markdown += Build-PHPSection
 
 $markdown += New-MDHeader 'Haskell' -Level 3
 $markdown += New-MDList -Style Unordered -Lines (@(
@@ -223,10 +231,16 @@ $markdown += New-MDHeader 'Browsers and Drivers' -Level 3
 $browsersAndDriversList = @(
     (Get-ChromeVersion),
     (Get-ChromeDriverVersion),
-    (Get-FirefoxVersion),
-    (Get-GeckodriverVersion),
-    (Get-ChromiumVersion)
+    (Get-ChromiumVersion),
+    (Get-SeleniumVersion)
 )
+
+if ((Test-IsUbuntu18) -or (Test-IsUbuntu20)) {
+    $browsersAndDriversList += @(
+        (Get-FirefoxVersion),
+        (Get-GeckodriverVersion)
+    )
+}
 
 $markdown += New-MDList -Style Unordered -Lines $browsersAndDriversList
 $markdown += New-MDHeader 'Environment variables' -Level 4
@@ -238,16 +252,28 @@ $markdown += New-MDList -Style Unordered -Lines @(
     (Get-DotNetCoreSdkVersions)
 )
 
-$markdown += New-MDHeader 'Databases' -Level 3
-$markdown += New-MDList -Style Unordered -Lines (@(
-        (Get-PostgreSqlVersion),
-        (Get-MongoDbVersion),
-        (Get-SqliteVersion)
-    ) | Sort-Object
+$markdown += New-MDHeader ".NET tools" -Level 3
+$tools = Get-DotnetTools
+$markdown += New-MDList -Lines $tools -Style Unordered
+
+$markdown += New-MDHeader "Databases" -Level 3
+$databaseLists = @(
+    (Get-SqliteVersion)
 )
 
+if ((Test-IsUbuntu18) -or (Test-IsUbuntu20)) {
+    $databaseLists += @(
+        (Get-MongoDbVersion)
+    )
+}
+
+$markdown += New-MDList -Style Unordered -Lines ( $databaseLists | Sort-Object )
+
+$markdown += Build-PostgreSqlSection
 $markdown += Build-MySQLSection
-$markdown += Build-MSSQLToolsSection
+if ((Test-IsUbuntu18) -or (Test-IsUbuntu20)) {
+    $markdown += Build-MSSQLToolsSection
+}
 
 $markdown += New-MDHeader 'Cached Tools' -Level 3
 $markdown += Build-CachedToolsSection
@@ -283,4 +309,5 @@ $markdown += New-MDNewLine
 $markdown += New-MDHeader 'Installed apt packages' -Level 3
 $markdown += Get-AptPackages | New-MDTable
 
+Test-BlankElement
 $markdown | Out-File -FilePath "${OutputDirectory}/Ubuntu-Readme.md"

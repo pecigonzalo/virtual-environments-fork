@@ -1,5 +1,9 @@
 #!/bin/bash -e
 
+# Source the helpers for use with the script
+# shellcheck source=/images/linux/scripts/helpers/os.sh
+source "$HELPER_SCRIPTS"/os.sh
+
 # Set ImageVersion and ImageOS env variables
 echo ImageVersion="$IMAGE_VERSION" | tee -a /etc/environment
 echo ImageOS="$IMAGE_OS" | tee -a /etc/environment
@@ -9,6 +13,7 @@ echo ACCEPT_EULA=Y | tee -a /etc/environment
 
 # This directory is supposed to be created in $HOME and owned by user(https://github.com/actions/virtual-environments/issues/491)
 mkdir -p /etc/skel/.config/configstore
+# shellcheck disable=SC2016
 echo 'XDG_CONFIG_HOME=$HOME/.config' | tee -a /etc/environment
 
 if [[ ! -f /run/systemd/container ]]; then
@@ -34,3 +39,17 @@ echo 'vm.max_map_count=262144' | tee -a /etc/sysctl.conf
 # Create symlink for tests running
 chmod +x "$HELPER_SCRIPTS"/invoke-tests.sh
 ln -s "$HELPER_SCRIPTS"/invoke-tests.sh /usr/local/bin/invoke_tests
+
+# Disable motd updates metadata
+sed -i 's/ENABLED=1/ENABLED=0/g' /etc/default/motd-news
+
+if [[ -f "/etc/fwupd/daemon.conf" ]]; then
+    sed -i 's/UpdateMotd=true/UpdateMotd=false/g' /etc/fwupd/daemon.conf
+    systemctl mask fwupd-refresh.timer
+fi
+
+# Disable to load providers
+# https://github.com/microsoft/azure-pipelines-agent/issues/3834
+if isUbuntu22; then
+    sed -i 's/openssl_conf = openssl_init/#openssl_conf = openssl_init/g' /etc/ssl/openssl.cnf
+fi

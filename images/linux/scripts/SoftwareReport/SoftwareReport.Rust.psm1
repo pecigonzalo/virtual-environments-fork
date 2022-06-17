@@ -1,6 +1,7 @@
 function Initialize-RustEnvironment {
-    ln -sf "/usr/share/rust/.rustup" $HOME/.rustup
-    ln -sf "/usr/share/rust/.cargo" $HOME/.cargo
+    $env:PATH = "/etc/skel/.cargo/bin:/etc/skel/.rustup/bin:$($env:PATH)"
+    $env:RUSTUP_HOME = "/etc/skel/.rustup"
+    $env:CARGO_HOME = "/etc/skel/.cargo"
 }
 
 function Get-RustVersion {
@@ -20,12 +21,12 @@ function Get-CargoVersion {
 }
 
 function Get-CargoAuditVersion {
-    $cargoAuditVersion = $(cargo audit --version) | Take-OutputPart -Part 1
+    $cargoAuditVersion = $(cargo-audit --version) | Take-OutputPart -Part 1
     return "Cargo audit $cargoAuditVersion"
 }
 
 function Get-CargoOutdatedVersion {
-    $cargoOutdatedVersion = $(cargo outdated --version) | Take-OutputPart -Part 1 -Delimiter "v"
+    $cargoOutdatedVersion = cargo outdated --version | Take-OutputPart -Part 1
     return "Cargo outdated $cargoOutdatedVersion"
 }
 

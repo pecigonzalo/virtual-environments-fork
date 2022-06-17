@@ -42,20 +42,29 @@ function Get-CodeQLBundleVersion {
 
 function Get-PodManVersion {
     $podmanVersion = podman --version | Take-OutputPart -Part 2
-    $aptSourceRepo = Get-AptSourceRepository -PackageName "containers"
-    return "Podman $podmanVersion (apt source repository: $aptSourceRepo)"
+    if ((Test-IsUbuntu18) -or (Test-IsUbuntu20)) {
+        $aptSourceRepo = Get-AptSourceRepository -PackageName "containers"
+        return "Podman $podmanVersion (apt source repository: $aptSourceRepo)"
+    }
+    return "Podman $podmanVersion"
 }
 
 function Get-BuildahVersion {
     $buildahVersion = buildah --version | Take-OutputPart -Part 2
-    $aptSourceRepo = Get-AptSourceRepository -PackageName "containers"
-    return "Buildah $buildahVersion (apt source repository: $aptSourceRepo)"
+    if ((Test-IsUbuntu18) -or (Test-IsUbuntu20)) {
+        $aptSourceRepo = Get-AptSourceRepository -PackageName "containers"
+        return "Buildah $buildahVersion (apt source repository: $aptSourceRepo)"
+    }
+    return "Buildah $buildahVersion"
 }
 
 function Get-SkopeoVersion {
     $skopeoVersion = skopeo --version | Take-OutputPart -Part 2
-    $aptSourceRepo = Get-AptSourceRepository -PackageName "containers"
-    return "Skopeo $skopeoVersion (apt source repository: $aptSourceRepo)"
+    if ((Test-IsUbuntu18) -or (Test-IsUbuntu20)) {
+        $aptSourceRepo = Get-AptSourceRepository -PackageName "containers"
+        return "Skopeo $skopeoVersion (apt source repository: $aptSourceRepo)"
+    }
+    return "Skopeo $skopeoVersion"
 }
 
 function Get-CMakeVersion {
@@ -63,9 +72,14 @@ function Get-CMakeVersion {
     return "CMake $cmakeVersion"
 }
 
-function Get-DockerComposeVersion {
+function Get-DockerComposeV1Version {
     $composeVersion = docker-compose -v | Take-OutputPart -Part 2 | Take-OutputPart -Part 0 -Delimiter ","
-    return "Docker Compose $composeVersion"
+    return "Docker Compose v1 $composeVersion"
+}
+
+function Get-DockerComposeV2Version {
+    $composeVersion = docker compose version | Take-OutputPart -Part 3
+    return "Docker Compose v2 $composeVersion"
 }
 
 function Get-DockerMobyClientVersion {
@@ -83,9 +97,13 @@ function Get-DockerBuildxVersion {
     return "Docker-Buildx $buildxVersion"
 }
 
+function Get-DockerAmazonECRCredHelperVersion {
+    $ecrVersion = docker-credential-ecr-login -v | Select-String "Version:" | Take-OutputPart -Part 1
+    return "Docker Amazon ECR Credential Helper $ecrVersion"
+}
+
 function Get-GitVersion {
-    $result = Get-CommandResult "git --version"
-    $gitVersion = $result.Output | Take-OutputPart -Part 2
+    $gitVersion = git --version | Take-OutputPart -Part -1
     $aptSourceRepo = Get-AptSourceRepository -PackageName "git-core"
     return "Git $gitVersion (apt source repository: $aptSourceRepo)"
 }
@@ -138,7 +156,7 @@ function Get-KindVersion {
 }
 
 function Get-KubectlVersion {
-    $kubectlVersion = kubectl version --client --short | Take-OutputPart -Part 2 | Take-OutputPart -Part 0 -Delimiter "v"
+    $kubectlVersion = (kubectl version --client --output=json | ConvertFrom-Json).clientVersion.gitVersion.Replace('v','')
     return "Kubectl $kubectlVersion"
 }
 
@@ -165,6 +183,11 @@ function Get-NewmanVersion {
     return "Newman $(newman --version)"
 }
 
+function Get-NVersion {
+    $nVersion = (n --version).Replace('v', '')
+    return "n $nVersion"
+}
+
 function Get-NvmVersion {
     $nvmVersion = bash -c "source /etc/skel/.nvm/nvm.sh && nvm --version"
     return "nvm $nvmVersion"
@@ -172,7 +195,7 @@ function Get-NvmVersion {
 
 function Get-PackerVersion {
     # Packer 1.7.1 has a bug and outputs version to stderr instead of stdout https://github.com/hashicorp/packer/issues/10855
-    $result = (Get-CommandResult -Command "packer --version").Output
+    $result = (Get-CommandResult "packer --version").Output
     $packerVersion = [regex]::matches($result, "(\d+.){2}\d+").Value
     return "Packer $packerVersion"
 }
@@ -191,13 +214,13 @@ function Get-JqVersion {
 }
 
 function Get-AzureCliVersion {
-    $azcliVersion = az -v | Select-String "azure-cli" | Take-OutputPart -Part -1
+    $azcliVersion = (az version | ConvertFrom-Json).'azure-cli'
     $aptSourceRepo = Get-AptSourceRepository -PackageName "azure-cli"
     return "Azure CLI (azure-cli) $azcliVersion (installation method: $aptSourceRepo)"
 }
 
 function Get-AzureDevopsVersion {
-    $azdevopsVersion = az -v | Select-String "azure-devops" | Take-OutputPart -Part -1
+    $azdevopsVersion = (az version | ConvertFrom-Json).extensions.'azure-devops'
     return "Azure CLI (azure-devops) $azdevopsVersion"
 }
 

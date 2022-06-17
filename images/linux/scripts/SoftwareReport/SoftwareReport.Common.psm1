@@ -24,14 +24,15 @@ function Get-ClangToolVersions {
     param (
         [Parameter(Mandatory = $true)]
         [string] $ToolName,
-        [string] $VersionPattern = '\d+\.\d+\.\d+)-'
+        [string] $VersionLineMatcher = "${ToolName} version",
+        [string] $VersionPattern = "\d+\.\d+\.\d+)-"
     )
 
-    $result = Get-CommandResult 'apt list --installed' -Multiline
-    $toolVersions = $result.Output | Where-Object { $_ -match "^${ToolName}-\d+" } | ForEach-Object {
-        $clangCommand = ($_ -Split '/')[0]
-        Invoke-Expression "$clangCommand --version" | Where-Object { $_ -match "${ToolName} version" } | ForEach-Object {
-            $_ -match "${ToolName} version (?<version>${VersionPattern}" | Out-Null
+    $result = Get-CommandResult "apt list --installed" -Multiline
+    $toolVersions = $result.Output | Where-Object { $_ -match "^${ToolName}-\d+"} | ForEach-Object {
+        $clangCommand = ($_ -Split "/")[0]
+        Invoke-Expression "$clangCommand --version" | Where-Object { $_ -match "${VersionLineMatcher}" } | ForEach-Object {
+            $_ -match "${VersionLineMatcher} (?<version>${VersionPattern}" | Out-Null
             $Matches.version
         }
     } | Sort-Object { [Version]$_ }
@@ -40,13 +41,18 @@ function Get-ClangToolVersions {
 }
 
 function Get-ClangVersions {
-    $clangVersions = Get-ClangToolVersions -ToolName 'clang'
-    return 'Clang ' + $clangVersions
+    $clangVersions = Get-ClangToolVersions -ToolName "clang"
+    return "Clang $clangVersions"
 }
 
 function Get-ClangFormatVersions {
-    $clangFormatVersions = Get-ClangToolVersions -ToolName 'clang-format'
-    return 'Clang-format ' + $clangFormatVersions
+    $clangFormatVersions = Get-ClangToolVersions -ToolName "clang-format"
+    return "Clang-format $clangFormatVersions"
+}
+
+function Get-ClangTidyVersions {
+    $clangFormatVersions = Get-ClangToolVersions -ToolName "clang-tidy" -VersionLineMatcher "LLVM version" -VersionPattern "\d+\.\d+\.\d+)"
+    return "Clang-tidy $clangFormatVersions"
 }
 
 
@@ -83,7 +89,7 @@ function Get-NodeVersion {
 }
 
 function Get-OpensslVersion {
-    return $(openssl version)
+    return "OpenSSL $(dpkg-query -W -f '${Version}' openssl)"
 }
 
 function Get-PerlVersion {
@@ -135,8 +141,8 @@ function Get-HomebrewVersion {
 }
 
 function Get-CpanVersion {
-    $result = Get-CommandResult 'cpan --version'
-    $result.Output -match 'version (?<version>\d+\.\d+) ' | Out-Null
+    $result = Get-CommandResult "cpan --version" -ExpectExitCode @(25, 255)
+    $result.Output -match "version (?<version>\d+\.\d+) " | Out-Null
     $cpanVersion = $Matches.version
     return "cpan $cpanVersion"
 }
@@ -167,6 +173,11 @@ function Get-NpmVersion {
 function Get-YarnVersion {
     $yarnVersion = yarn --version
     return "Yarn $yarnVersion"
+}
+
+function Get-ParcelVersion {
+    $parcelVersion = parcel --version
+    return "Parcel $parcelVersion"
 }
 
 function Get-PipVersion {
@@ -218,16 +229,16 @@ function Get-SbtVersion {
 }
 
 function Get-PHPVersions {
-    $result = Get-CommandResult 'apt list --installed' -Multiline
-    return $result.Output | Where-Object { $_ -match '^php\d+\.\d+/' } | ForEach-Object {
-        $_ -match 'now (?<version>\d+\.\d+\.\d+)-' | Out-Null
+    $result = Get-CommandResult "apt list --installed" -Multiline
+    return $result.Output | Where-Object { $_ -match "^php\d+\.\d+/"} | ForEach-Object {
+        $_ -match "now (\d+:)?(?<version>\d+\.\d+\.\d+)-" | Out-Null
         $Matches.version
     }
 }
 
 function Get-ComposerVersion {
-    $(composer --version) -match 'Composer version (?<version>\d+\.\d+\.\d+)\s' | Out-Null
-    return $Matches.version
+    $composerVersion = (composer --version) -replace " version" | Take-OutputPart -Part 1
+    return $composerVersion
 }
 
 function Get-PHPUnitVersion {
@@ -270,8 +281,7 @@ function Build-PHPSection {
 function Get-GHCVersion {
     $(ghc --version) -match 'version (?<version>\d+\.\d+\.\d+)' | Out-Null
     $ghcVersion = $Matches.version
-    $aptSourceRepo = Get-AptSourceRepository -PackageName 'ghc'
-    return "GHC $ghcVersion (apt source repository: $aptSourceRepo)"
+    return "GHC $ghcVersion"
 }
 
 function Get-GHCupVersion {
@@ -320,6 +330,20 @@ function Get-DotNetCoreSdkVersions {
     $unsortedDotNetCoreSdkVersion = dotnet --list-sdks list | ForEach-Object { $_ | Take-OutputPart -Part 0 }
     $dotNetCoreSdkVersion = $unsortedDotNetCoreSdkVersion -join ' '
     return $dotNetCoreSdkVersion
+}
+
+function Get-DotnetTools {
+    $env:PATH = "/etc/skel/.dotnet/tools:$($env:PATH)"
+
+    $dotnetTools = (Get-ToolsetContent).dotnet.tools
+
+    $toolsList = @()
+
+    ForEach ($dotnetTool in $dotnetTools) {
+        $toolsList += $dotnetTool.name + " " + (Invoke-Expression $dotnetTool.getversion)
+    }
+
+    return $toolsList
 }
 
 function Get-CachedDockerImages {

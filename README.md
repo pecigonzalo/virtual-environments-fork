@@ -1,8 +1,7 @@
 # GitHub Actions Virtual Environments
 
-## Docker images source is in [`images/linux/`](./images/linux)
-
-This repository contains the source used to create the [virtual environments](https://help.github.com/en/actions/reference/virtual-environments-for-github-hosted-runners) for GitHub Actions hosted runners, as well as the VM images of [Microsoft-hosted agents](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/hosted?view=azure-devops#use-a-microsoft-hosted-agent) used for Azure Pipelines. To build a VM machine from this repo's source, see the [instructions](docs/create-image-and-azure-resources.md).
+Repository contains the source used to create the [virtual environments](https://help.github.com/en/actions/reference/virtual-environments-for-github-hosted-runners) for GitHub Actions hosted runners, as well as the VM images of [Microsoft-hosted agents](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/hosted?view=azure-devops#use-a-microsoft-hosted-agent) used for Azure Pipelines.
+To build a VM machine from this repo's source, see the [instructions](docs/create-image-and-azure-resources.md).
 
 How to get in touch with us:
 
@@ -13,23 +12,19 @@ For general questions about using the virtual environments or writing your Actio
 
 ## Available Environments
 
-| Environment         | YAML Label                         | Included Software | Latest Release & Rollout Progress                                |
-| ------------------- | ---------------------------------- | ----------------- | ---------------------------------------------------------------- |
-| Ubuntu 20.04        | `ubuntu-latest` or `ubuntu-20.04`  | [ubuntu-20.04]    | [![ubuntu-20.04-badge][ubuntu-20.04-badge]][ubuntu-20.04-status] |
-| Ubuntu 18.04        | `ubuntu-18.04`                     | [ubuntu-18.04]    | [![ubuntu-18.04-badge][ubuntu-18.04-badge]][ubuntu-18.04-status] |
-| macOS 11            | `macos-11`                         | [macOS-11]        | [![macos-11-badge][macos-11-badge]][macos-11-status]             |
-| macOS 10.15         | `macos-latest` or `macos-10.15`    | [macOS-10.15]     | [![macos-10.15-badge][macos-10.15-badge]][macos-10.15-status]    |
-| Windows Server 2019 | `windows-latest` or `windows-2019` | [windows-2019]    | [![windows-2019-badge][windows-2019-badge]][windows-2019-status] |
-| Windows Server 2016 | `windows-2016`                     | [windows-2016]    | [![windows-2016-badge][windows-2016-badge]][windows-2016-status] |
+| Environment                  | YAML Label                         | Included Software | Latest Release & Rollout Progress                                |
+| ---------------------------- | ---------------------------------- | ----------------- | ---------------------------------------------------------------- |
+| Ubuntu 22.04 <sup>beta</sup> | `ubuntu-22.04`                     | [ubuntu-22.04]    | [![ubuntu-22.04-badge][ubuntu-22.04-badge]][ubuntu-22.04-status] |
+| Ubuntu 20.04                 | `ubuntu-latest` or `ubuntu-20.04`  | [ubuntu-20.04]    | [![ubuntu-20.04-badge][ubuntu-20.04-badge]][ubuntu-20.04-status] |
+| Ubuntu 18.04                 | `ubuntu-18.04`                     | [ubuntu-18.04]    | [![ubuntu-18.04-badge][ubuntu-18.04-badge]][ubuntu-18.04-status] |
+| macOS 12                     | `macos-12`                         | [macOS-12]        | [![macos-12-badge][macos-12-badge]][macos-12-status]             |
+| macOS 11                     | `macos-latest` or `macos-11`       | [macOS-11]        | [![macos-11-badge][macos-11-badge]][macos-11-status]             |
+| macOS 10.15                  | `macos-10.15`                      | [macOS-10.15]     | [![macos-10.15-badge][macos-10.15-badge]][macos-10.15-status]    |
+| Windows Server 2022          | `windows-latest` or `windows-2022` | [windows-2022]    | [![windows-2022-badge][windows-2022-badge]][windows-2022-status] |
+| Windows Server 2019          | `windows-2019`                     | [windows-2019]    | [![windows-2019-badge][windows-2019-badge]][windows-2019-status] |
+| Windows Server 2016          | `windows-2016`                     | [windows-2016]    | [![windows-2016-badge][windows-2016-badge]][windows-2016-status] |
 
-```none
-Ubuntu 16.04 has been deprecated and will be removed on September 20, 2021.
-Existing workflows using `Ubuntu 16.04` should migrate to `Ubuntu 20.04` or `Ubuntu 18.04`
-```
-
-> The macOS 11 virtual environment is currently in preview and is automatically available to the existing Enterprise plan customers who used macOS hosted runners at least once between May, 1 - June, 1. New Enterprise plan customers, or customers on other plans, should fill the form to request access to macOS 11 virtual environment. Please view our [Big Sur guide](./docs/macos-11-onboarding.md) for more details.
->
-> The `macos-latest` YAML workflow label still uses the macOS 10.15 virtual environment.
+**Note:** Beta and Preview images are provided "as-is", "with all faults" and "as available" and are excluded from the service level agreement and warranty. Beta and Preview images may not be covered by customer support.
 
 **_What images are available for GitHub Actions and Azure DevOps?_**
 The availability of images for GitHub Actions and Azure DevOps is different. See documentation for more details:
@@ -46,32 +41,40 @@ We are in the process of preparing MacOS CI to accept contributions. Until then,
 
 ## Updates to virtual environments
 
-_Cadence:_
+### _Cadence_
 
 We typically deploy weekly updates to the software on the virtual environments.
 For some tools, we always install the latest at the time of the deployment; for others,
 we pin the tool to specific version(s).
 
-_Following Along / Change Notifications:_
+### _Following Along / Change Notifications_
 
 - **High Impact Changes** (ex. breaking changes, new or deprecated environments) will be posted to the GitHub Changelog on our [blog](https://github.blog/changelog/) and on [twitter](https://twitter.com/GHchangelog).
 - **Low Impact Changes** will be pinned in this repository and marked with the [Announcement](https://github.com/actions/virtual-environments/labels/Announcement) label.
 - **Regular Weekly Rhythm** can be followed by watching [Releases](https://github.com/actions/virtual-environments/releases). Pre-release is created when deployment is started. As soon as deployment is finished, it is converted to release.
   You can also track upcoming changes using the [awaiting-deployment](https://github.com/actions/virtual-environments/labels/awaiting-deployment) label.
 
+[ubuntu-22.04]: https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2204-Readme.md
+[ubuntu-22.04-badge]: https://actionvirtualenvironmentsstatus.azurewebsites.net/api/status?imageName=ubuntu22&badge=1
+[ubuntu-22.04-status]: https://actionvirtualenvironmentsstatus.azurewebsites.net/api/status?imageName=ubuntu22&redirect=1
 [ubuntu-20.04]: https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
 [ubuntu-20.04-badge]: https://actionvirtualenvironmentsstatus.azurewebsites.net/api/status?imageName=ubuntu20&badge=1
 [ubuntu-20.04-status]: https://actionvirtualenvironmentsstatus.azurewebsites.net/api/status?imageName=ubuntu20&redirect=1
 [ubuntu-18.04]: https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu1804-README.md
 [ubuntu-18.04-badge]: https://actionvirtualenvironmentsstatus.azurewebsites.net/api/status?imageName=ubuntu18&badge=1
 [ubuntu-18.04-status]: https://actionvirtualenvironmentsstatus.azurewebsites.net/api/status?imageName=ubuntu18&redirect=1
-[ubuntu-16.04]: https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu1604-README.md
+[windows-2022]: https://github.com/actions/virtual-environments/blob/main/images/win/Windows2022-Readme.md
+[windows-2022-badge]: https://actionvirtualenvironmentsstatus.azurewebsites.net/api/status?imageName=windows-2022&badge=1
+[windows-2022-status]: https://actionvirtualenvironmentsstatus.azurewebsites.net/api/status?imageName=windows-2022&redirect=1
 [windows-2019]: https://github.com/actions/virtual-environments/blob/main/images/win/Windows2019-Readme.md
 [windows-2019-badge]: https://actionvirtualenvironmentsstatus.azurewebsites.net/api/status?imageName=windows-2019&badge=1
 [windows-2019-status]: https://actionvirtualenvironmentsstatus.azurewebsites.net/api/status?imageName=windows-2019&redirect=1
 [windows-2016]: https://github.com/actions/virtual-environments/blob/main/images/win/Windows2016-Readme.md
 [windows-2016-badge]: https://actionvirtualenvironmentsstatus.azurewebsites.net/api/status?imageName=windows-2016&badge=1
 [windows-2016-status]: https://actionvirtualenvironmentsstatus.azurewebsites.net/api/status?imageName=windows-2016&redirect=1
+[macos-12]: https://github.com/actions/virtual-environments/blob/main/images/macos/macos-11-Readme.md
+[macos-12-badge]: https://actionvirtualenvironmentsstatus.azurewebsites.net/api/status?imageName=macos-12&badge=1
+[macos-12-status]: https://actionvirtualenvironmentsstatus.azurewebsites.net/api/status?imageName=macos-12&redirect=1
 [macos-11]: https://github.com/actions/virtual-environments/blob/main/images/macos/macos-11-Readme.md
 [macos-11-badge]: https://actionvirtualenvironmentsstatus.azurewebsites.net/api/status?imageName=macos-11&badge=1
 [macos-11-status]: https://actionvirtualenvironmentsstatus.azurewebsites.net/api/status?imageName=macos-11&redirect=1

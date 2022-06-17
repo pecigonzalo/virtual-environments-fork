@@ -7,7 +7,8 @@ function Get-BrowserSection {
         (Get-EdgeVersion),
         (Get-EdgeDriverVersion),
         (Get-FirefoxVersion),
-        (Get-GeckodriverVersion)
+        (Get-GeckodriverVersion),
+        (Get-SeleniumVersion)
     )
 }
 
@@ -39,7 +40,7 @@ function Get-EdgeVersion {
 }
 
 function Get-EdgeDriverVersion {
-    return Run-Command "msedgedriver --version" | Take-Part -Part 0,1
+    return Run-Command "msedgedriver --version" | Take-Part -Part 0,1,2,3
 }
 
 function Get-FirefoxVersion {
@@ -49,6 +50,11 @@ function Get-FirefoxVersion {
 
 function Get-GeckodriverVersion {
     return Run-Command "geckodriver --version" | Select-Object -First 1
+}
+
+function Get-SeleniumVersion {
+    $seleniumVersion = (Get-ChildItem -Path "/usr/local/Cellar/selenium-server*/*").Name
+    return "Selenium server $seleniumVersion"
 }
 
 function Build-BrowserWebdriversEnvironmentTable {

@@ -1,23 +1,34 @@
 #!/bin/bash -e
 ################################################################################
 ##  File:  postgresql.sh
-##  Desc:  Installs Postgresql
+##  Desc:  Installs PostgreSQL
 ################################################################################
+
+# Source the helpers
+# shellcheck source=/images/linux/scripts/helpers/os.sh
+source "$HELPER_SCRIPTS"/os.sh
+# shellcheck source=/images/linux/scripts/helpers/install.sh
+source "$HELPER_SCRIPTS"/install.sh
 
 REPO_URL="https://apt.postgresql.org/pub/repos/apt/"
 
-#Preparing repo for PostgreSQL 12.
-wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
-echo "deb $REPO_URL $(lsb_release -cs)-pgdg main" | tee /etc/apt/sources.list.d/pgdg.list
+# Preparing repo for PostgreSQL
+wget -qO - https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor > /usr/share/keyrings/postgresql.gpg
+echo "deb [signed-by=/usr/share/keyrings/postgresql.gpg] $REPO_URL $(getOSVersionLabel)-pgdg main" > /etc/apt/sources.list.d/pgdg.list
 
+# Fetch PostgreSQL version to install from the toolset
+toolsetVersion=$(get_toolset_value '.postgresql.version')
+
+# Install PostgreSQL
 echo "Install PostgreSQL"
 apt update
-apt install postgresql postgresql-client
+apt install postgresql-"$toolsetVersion"
 
 echo "Install libpq-dev"
 apt-get install libpq-dev
 
 rm /etc/apt/sources.list.d/pgdg.list
+rm /usr/share/keyrings/postgresql.gpg
 
 echo "postgresql $REPO_URL" >>"$HELPER_SCRIPTS"/apt-sources.txt
 

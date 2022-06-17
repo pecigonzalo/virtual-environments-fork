@@ -8,12 +8,17 @@
 # shellcheck source=/images/linux/scripts/helpers/install.sh
 source "$HELPER_SCRIPTS"/install.sh
 
-# Download selenium standalone server
-SELENIUM_JAR_NAME="selenium-server-standalone.jar"
+# Download Selenium server
+SELENIUM_MAJOR_VERSION=$(get_toolset_value '.selenium.version')
+SELENIUM_BINARY_NAME=$(get_toolset_value '.selenium.binary_name')
 SELENIUM_JAR_PATH="/usr/share/java"
-SELENIUM_LATEST_VERSION_URL="$(curl -s https://api.github.com/repos/SeleniumHQ/selenium/releases/latest |\
-    jq -r '.assets[].browser_download_url | select(contains("selenium-server-standalone") and endswith(".jar"))')"
-download_with_retries $SELENIUM_LATEST_VERSION_URL $SELENIUM_JAR_PATH $SELENIUM_JAR_NAME
+SELENIUM_JAR_NAME="$SELENIUM_BINARY_NAME.jar"
+SELENIUM_DOWNLOAD_URL=$(get_github_package_download_url "SeleniumHQ/selenium" "contains(\"${SELENIUM_BINARY_NAME}-${SELENIUM_MAJOR_VERSION}\") and endswith(\".jar\")")
+download_with_retries "$SELENIUM_DOWNLOAD_URL" $SELENIUM_JAR_PATH "$SELENIUM_JAR_NAME"
+
+# Create an epmty file to retrive selenium version
+SELENIUM_FULL_VERSION=$(echo "$SELENIUM_DOWNLOAD_URL" | awk -F"${SELENIUM_BINARY_NAME}-|.jar" '{print $2}')
+touch "$SELENIUM_JAR_PATH/$SELENIUM_BINARY_NAME-$SELENIUM_FULL_VERSION"
 
 # Add SELENIUM_JAR_PATH environment variable
 echo "SELENIUM_JAR_PATH=$SELENIUM_JAR_PATH/$SELENIUM_JAR_NAME" | tee -a /etc/environment

@@ -1,4 +1,4 @@
-Describe "PHP" -Skip:(Test-IsUbuntu16) {
+Describe "PHP" {
 
     [array]$testCases = (Get-ToolsetContent).php.versions | ForEach-Object { @{phpVersion = $_ } }
 
@@ -29,7 +29,7 @@ Describe "PHP" -Skip:(Test-IsUbuntu16) {
     }
 }
 
-Describe "Swift" {
+Describe "Swift" -Skip:(Test-IsUbuntu22) {
     It "swift" {
         "swift --version" | Should -ReturnZeroExitCode
     }
@@ -37,10 +37,14 @@ Describe "Swift" {
     It "swiftc" {
         "swiftc --version" | Should -ReturnZeroExitCode
     }
+
+    It "libsourcekitd" {
+        "/usr/local/lib/libsourcekitdInProc.so" | Should -Exist
+    }
 }
 
-Describe "PipxPackages" -Skip:(Test-IsUbuntu16) {
-    [array]$testCases = (Get-ToolsetContent).pipx | ForEach-Object { @{package = $_.package; cmd = $_.cmd } }
+Describe "PipxPackages" {
+    [array]$testCases = (Get-ToolsetContent).pipx | ForEach-Object { @{package=$_.package; cmd = $_.cmd} }
 
     It "<package>" -TestCases $testCases {
         "$cmd --version" | Should -ReturnZeroExitCode

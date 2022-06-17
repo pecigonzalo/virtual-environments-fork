@@ -8,13 +8,19 @@ Describe "azcopy" {
     }
 }
 
-Describe "Bicep" -Skip:(Test-IsUbuntu16) {
+Describe "Bicep" {
     It "Bicep" {
         "bicep --version" | Should -ReturnZeroExitCode
     }
 }
 
 Describe "Rust" {
+    BeforeAll {
+        $env:PATH = "/etc/skel/.cargo/bin:/etc/skel/.rustup/bin:$($env:PATH)"
+        $env:RUSTUP_HOME = "/etc/skel/.rustup"
+        $env:CARGO_HOME = "/etc/skel/.cargo"
+    }
+
     It "Rustup is installed" {
         "rustup --version" | Should -ReturnZeroExitCode
     }
@@ -66,6 +72,14 @@ Describe "Docker" {
         "docker buildx" | Should -ReturnZeroExitCode
     }
 
+    It "docker compose v2" {
+        "docker compose" | Should -ReturnZeroExitCode
+    }
+
+    It "docker-credential-ecr-login" {
+        "docker-credential-ecr-login -v" | Should -ReturnZeroExitCode
+    }
+
     Context "docker images" {
         $testCases = (Get-ToolsetContent).docker.images | ForEach-Object { @{ ImageName = $_ } }
 
@@ -75,7 +89,7 @@ Describe "Docker" {
     }
 }
 
-Describe "Docker-compose" {
+Describe "Docker-compose v1" {
     It "docker-compose" {
         "docker-compose --version" | Should -ReturnZeroExitCode
     }
@@ -106,7 +120,10 @@ Describe "clang" {
 
         "clang-$ClangVersion --version" | Should -ReturnZeroExitCode
         "clang++-$ClangVersion --version" | Should -ReturnZeroExitCode
-    }   
+        "clang-format-$ClangVersion --version" | Should -ReturnZeroExitCode
+        "clang-tidy-$ClangVersion --version" | Should -ReturnZeroExitCode
+        "run-clang-tidy-$ClangVersion --help" | Should -ReturnZeroExitCode
+    }
 }
 
 Describe "Cmake" {
@@ -115,8 +132,8 @@ Describe "Cmake" {
     }
 }
 
-Describe "erlang" {
-    $testCases = @("erl -version", "erlc -v", "rebar3 -v") | ForEach-Object { @{ErlangCommand = $_ } }
+Describe "erlang" -Skip:(Test-IsUbuntu22) {
+    $testCases = @("erl -version", "erlc -v", "rebar3 -v") | ForEach-Object { @{ErlangCommand = $_} }
 
     It "erlang <ErlangCommand>" -TestCases $testCases {
         param (
@@ -151,7 +168,7 @@ Describe "gfortran" {
     }
 }
 
-Describe "Mono" {
+Describe "Mono" -Skip:(Test-IsUbuntu22) {
     It "mono" {
         "mono --version" | Should -ReturnZeroExitCode
     }
@@ -165,7 +182,7 @@ Describe "Mono" {
     }
 }
 
-Describe "MSSQLCommandLineTools" {
+Describe "MSSQLCommandLineTools" -Skip:(Test-IsUbuntu22) {
     It "sqlcmd" {
         "sqlcmd -?" | Should -ReturnZeroExitCode
     }
@@ -190,8 +207,10 @@ Describe "Sbt" {
 }
 
 Describe "Selenium" {
-    It "Selenium Server 'selenium-server-standalone.jar' is installed" {
-        "/usr/share/java/selenium-server-standalone.jar" | Should -Exist
+    It "Selenium is installed" {
+        $seleniumBinaryName = (Get-ToolsetContent).selenium.binary_name
+        $seleniumPath = Join-Path "/usr/share/java" "$seleniumBinaryName.jar"
+        $seleniumPath | Should -Exist
     }
 }
 
@@ -231,7 +250,7 @@ Describe "Heroku" {
     }
 }
 
-Describe "HHVM" {
+Describe "HHVM" -Skip:(Test-IsUbuntu22) {
     It "hhvm" {
         "hhvm --version" | Should -ReturnZeroExitCode
     }
@@ -285,12 +304,6 @@ Describe "Leiningen" {
     }
 }
 
-Describe "Mercurial" {
-    It "mercurial" {
-        "hg --version" | Should -ReturnZeroExitCode
-    }
-}
-
 Describe "Conda" {
     It "conda" {
         "conda --version" | Should -ReturnZeroExitCode
@@ -309,13 +322,13 @@ Describe "Pulumi" {
     }
 }
 
-Describe "Phantomjs" {
+Describe "Phantomjs" -Skip:(Test-IsUbuntu22) {
     It "phantomjs" {
         "phantomjs --version" | Should -ReturnZeroExitCode
     }
 }
 
-Describe "GraalVM" -Skip:(-not (Test-IsUbuntu20)) {
+Describe "GraalVM" -Skip:(Test-IsUbuntu18) {
     It "graalvm" {
         '$GRAALVM_11_ROOT/bin/java -version' | Should -ReturnZeroExitCode
     }
@@ -325,8 +338,8 @@ Describe "GraalVM" -Skip:(-not (Test-IsUbuntu20)) {
     }
 }
 
-Describe "Containers" -Skip:(Test-IsUbuntu16) {
-    $testCases = @("podman", "buildah", "skopeo") | ForEach-Object { @{ContainerCommand = $_ } }
+Describe "Containers" {
+    $testCases = @("podman", "buildah", "skopeo") | ForEach-Object { @{ContainerCommand = $_} }
 
     It "<ContainerCommand>" -TestCases $testCases {
         param (
@@ -334,7 +347,7 @@ Describe "Containers" -Skip:(Test-IsUbuntu16) {
         )
 
         "$ContainerCommand -v" | Should -ReturnZeroExitCode
-    }   
+    }
 }
 
 Describe "nvm" {
@@ -352,7 +365,7 @@ Describe "Python" {
         )
 
         "$PythonCommand --version" | Should -ReturnZeroExitCode
-    }   
+    }
 }
 
 Describe "Ruby" {

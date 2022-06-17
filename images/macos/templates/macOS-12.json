@@ -11,9 +11,10 @@
         "output_folder": null,
         "vm_username": null,
         "vm_password": null,
+        "github_api_pat": null,
         "xcode_install_user": null,
         "xcode_install_password": null,
-        "image_os": "macos1013"
+        "image_os": "macos12"
     },
     "builders": [
         {
@@ -30,7 +31,8 @@
             "vm_name": "{{user `build_id`}}",
             "ssh_username": "{{user `vm_username`}}",
             "ssh_password": "{{user `vm_password`}}",
-            "CPUs": "10",
+            "CPUs": "5",
+            "cpu_cores": "5",
             "RAM": "24576",
             "NestedHV": "true",
             "shutdown_timeout": "15m"
@@ -63,6 +65,11 @@
         },
         {
             "type": "file",
+            "source": "./provision/configuration/add-certificate.swift",
+            "destination": "~/image-generation/add-certificate.swift"
+        },
+        {
+            "type": "file",
             "source": "./provision/configuration/environment/bashrc",
             "destination": "~/.bashrc"
         },
@@ -83,8 +90,16 @@
         },
         {
             "type": "file",
-            "source": "./toolsets/toolset-10.13.json",
+            "source": "./toolsets/toolset-12.json",
             "destination": "~/image-generation/toolset.json"
+        },
+        {
+            "type": "shell",
+            "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} {{ .Path }}",
+            "scripts": [
+                "./provision/core/xcode-clt.sh",
+                "./provision/core/homebrew.sh"
+            ]
         },
         {
             "type": "shell",
@@ -95,7 +110,8 @@
                 "./provision/configuration/disable-auto-updates.sh",
                 "./provision/configuration/screensaver-off.sh",
                 "./provision/configuration/ntpconf.sh",
-                "./provision/configuration/max-files.sh"
+                "./provision/configuration/max-files.sh",
+                "./provision/configuration/shell-change.sh"
             ],
             "environment_vars": [
                 "PASSWORD={{user `vm_password`}}",
@@ -112,7 +128,8 @@
             ],
             "environment_vars": [
                 "IMAGE_VERSION={{user `build_id`}}",
-                "IMAGE_OS={{user `image_os`}}"
+                "IMAGE_OS={{user `image_os`}}",
+                "PASSWORD={{user `vm_password`}}"
             ]
         },
         {
@@ -126,8 +143,7 @@
             "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} {{ .Path }}",
             "pause_before": "30s",
             "scripts": [
-                "./provision/core/xcode-clt.sh",
-                "./provision/core/homebrew.sh",
+                "./provision/core/open_windows_check.sh",
                 "./provision/core/powershell.sh",
                 "./provision/core/dotnet.sh",
                 "./provision/core/python.sh",
@@ -136,7 +152,12 @@
                 "./provision/core/ruby.sh",
                 "./provision/core/rubygem.sh",
                 "./provision/core/git.sh",
-                "./provision/core/node.sh"
+                "./provision/core/node.sh",
+                "./provision/core/commonutils.sh"
+            ],
+            "environment_vars": [
+                "API_PAT={{user `github_api_pat`}}",
+                "USER_PASSWORD={{user `vm_password`}}"
             ]
         },
         {
@@ -158,27 +179,54 @@
             "type": "shell",
             "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} {{ .Path }}",
             "scripts": [
-                "./provision/core/commonutils.sh",
+                "./provision/core/llvm.sh",
+                "./provision/core/golang.sh",
+                "./provision/core/swiftlint.sh",
                 "./provision/core/openjdk.sh",
                 "./provision/core/php.sh",
                 "./provision/core/aws.sh",
+                "./provision/core/rust.sh",
+                "./provision/core/gcc.sh",
+                "./provision/core/haskell.sh",
+                "./provision/core/stack.sh",
                 "./provision/core/cocoapods.sh",
                 "./provision/core/android-toolsets.sh",
                 "./provision/core/xamarin.sh",
-                "./provision/core/xamarin-android-ndk.sh",
                 "./provision/core/vsmac.sh",
                 "./provision/core/nvm.sh",
+                "./provision/core/apache.sh",
+                "./provision/core/nginx.sh",
                 "./provision/core/postgresql.sh",
                 "./provision/core/mongodb.sh",
+                "./provision/core/audiodevice.sh",
+                "./provision/core/vcpkg.sh",
                 "./provision/core/miniconda.sh",
+                "./provision/core/safari.sh",
                 "./provision/core/chrome.sh",
                 "./provision/core/edge.sh",
                 "./provision/core/firefox.sh",
-                "./provision/core/toolcache-high-sierra.sh",
                 "./provision/core/pypy.sh",
                 "./provision/core/pipx-packages.sh",
-                "./provision/core/xcode-sims.sh",
-                "./provision/core/build-xcode-symlinks.sh"
+                "./provision/core/bicep.sh",
+                "./provision/core/graalvm.sh"
+            ],
+            "environment_vars": [
+                "API_PAT={{user `github_api_pat`}}"
+            ]
+        },
+        {
+            "type": "shell",
+            "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} pwsh -f {{ .Path }}",
+            "scripts": [
+                "./provision/core/toolset.ps1",
+                "./provision/core/configure-toolset.ps1"
+            ]
+        },
+        {
+            "type": "shell",
+            "execute_command": "ruby {{ .Path }}",
+            "scripts": [
+                "./provision/core/delete-duplicate-sims.rb"
             ]
         },
         {

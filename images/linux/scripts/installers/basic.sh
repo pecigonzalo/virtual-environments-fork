@@ -5,8 +5,6 @@
 ################################################################################
 # shellcheck source=/images/linux/scripts/helpers/install.sh
 source "$HELPER_SCRIPTS"/install.sh
-# shellcheck source=/images/linux/scripts/helpers/os.sh
-source "$HELPER_SCRIPTS"/os.sh
 
 common_packages=$(get_toolset_value .apt.common_packages[])
 cmd_packages=$(get_toolset_value .apt.cmd_packages[])

@@ -180,17 +180,11 @@
         {
             "type": "shell",
             "scripts": [
-                "{{template_dir}}/scripts/installers/complete-snap-setup.sh"
+                "{{template_dir}}/scripts/installers/complete-snap-setup.sh",
+                "{{template_dir}}/scripts/installers/powershellcore.sh"
             ],
             "environment_vars": [
                 "HELPER_SCRIPTS={{user `helper_script_folder`}}"
-            ],
-            "execute_command": "sudo sh -c '{{ .Vars }} {{ .Path }}'"
-        },
-        {
-            "type": "shell",
-            "scripts": [
-                "{{template_dir}}/scripts/installers/powershellcore.sh"
             ],
             "execute_command": "sudo sh -c '{{ .Vars }} {{ .Path }}'"
         },
@@ -251,7 +245,6 @@
                 "{{template_dir}}/scripts/installers/kubernetes-tools.sh",
                 "{{template_dir}}/scripts/installers/oc.sh",
                 "{{template_dir}}/scripts/installers/leiningen.sh",
-                "{{template_dir}}/scripts/installers/mercurial.sh",
                 "{{template_dir}}/scripts/installers/miniconda.sh",
                 "{{template_dir}}/scripts/installers/mono.sh",
                 "{{template_dir}}/scripts/installers/mysql.sh",
@@ -277,8 +270,8 @@
                 "{{template_dir}}/scripts/installers/vcpkg.sh",
                 "{{template_dir}}/scripts/installers/dpkg-config.sh",
                 "{{template_dir}}/scripts/installers/mongodb.sh",
-                "{{template_dir}}/scripts/installers/android.sh",
                 "{{template_dir}}/scripts/installers/yq.sh",
+                "{{template_dir}}/scripts/installers/android.sh",
                 "{{template_dir}}/scripts/installers/pypy.sh",
                 "{{template_dir}}/scripts/installers/python.sh",
                 "{{template_dir}}/scripts/installers/aws.sh"
@@ -335,7 +328,24 @@
         },
         {
             "type": "shell",
-            "scripts": [
+            "inline": [
+                "pwsh -File {{user `image_folder`}}/SoftwareReport/SoftwareReport.Generator.ps1 -OutputDirectory {{user `image_folder`}}",
+                "pwsh -File {{user `image_folder`}}/tests/RunAll-Tests.ps1 -OutputDirectory {{user `image_folder`}}"
+            ],
+            "environment_vars": [
+                "IMAGE_VERSION={{user `image_version`}}",
+                "INSTALLER_SCRIPT_FOLDER={{user `installer_script_folder`}}"
+            ]
+        },
+        {
+            "type": "file",
+            "source": "{{user `image_folder`}}/Ubuntu-Readme.md",
+            "destination": "{{template_dir}}/Ubuntu1804-Readme.md",
+            "direction": "download"
+        },
+        {
+            "type": "shell",
+            "scripts":[
                 "{{template_dir}}/scripts/installers/post-deployment.sh"
             ],
             "environment_vars": [

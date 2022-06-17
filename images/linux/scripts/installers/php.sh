@@ -21,7 +21,7 @@ php_versions=$(get_toolset_value '.php.versions[]')
 
 for version in $php_versions; do
     echo "Installing PHP $version"
-    apt-fast install -y --no-install-recommends \
+    apt-get install -y --no-install-recommends \
         php"$version" \
         php"$version"-amqp \
         php"$version"-apcu \
@@ -67,34 +67,24 @@ for version in $php_versions; do
         php"$version"-zip \
         php"$version"-zmq
 
-    if [[ $version == "5.6" || $version == "7.0" || $version == "7.1" ]]; then
-        apt-fast install -y --no-install-recommends php"$version"-mcrypt php"$version"-recode
-    fi
-
-    if [[ $version == "7.2" || $version == "7.3" ]]; then
-        apt-fast install -y --no-install-recommends php"$version"-recode
-    fi
-
-    if [[ $version != "8.0" ]]; then
-        apt-fast install -y --no-install-recommends php"$version"-xmlrpc php"$version"-json
-    fi
-
-    if [[ $version != "5.6" && $version != "7.0" ]]; then
-        apt-fast install -y --no-install-recommends php"$version"-pcov
+        apt-get install -y --no-install-recommends php"$version"-pcov
 
         # Disable PCOV, as Xdebug is enabled by default
         # https://github.com/krakjoe/pcov#interoperability
         phpdismod -v "$version" pcov
+
+    if [[ $version == "7.2" || $version == "7.3" ]]; then
+        apt-get install -y --no-install-recommends php"$version"-recode
     fi
 
-    if [[ $version = "7.0" || $version = "7.1" ]]; then
-        apt-fast install -y --no-install-recommends php"$version"-sodium
+    if [[ $version != "8.0" && $version != "8.1" ]]; then
+        apt-get install -y --no-install-recommends php"$version"-xmlrpc php"$version"-json
     fi
 done
 
-apt-fast install -y --no-install-recommends php-pear
+apt-get install -y --no-install-recommends php-pear
 
-apt-fast install -y --no-install-recommends snmp
+apt-get install -y --no-install-recommends snmp
 
 # Install composer
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
@@ -117,8 +107,8 @@ mv phpunit /usr/local/bin/phpunit
 
 # ubuntu 20.04 libzip-dev is libzip5 based and is not compatible libzip-dev of ppa:ondrej/php
 # see https://github.com/actions/virtual-environments/issues/1084
-if isUbuntu20 ; then
-  rm /etc/apt/sources.list.d/ondrej-ubuntu-php-focal.list
+if isUbuntu20 || isUbuntu22; then
+  rm /etc/apt/sources.list.d/ondrej-*.list
   apt-get update
 fi
 

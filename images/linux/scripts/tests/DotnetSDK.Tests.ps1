@@ -1,12 +1,13 @@
 Import-Module "$PSScriptRoot/../helpers/Common.Helpers.psm1"
 
-Describe "Dotnet" {
+Describe "Dotnet and tools" {
 
     BeforeAll {
+        $env:PATH = "/etc/skel/.dotnet/tools:$($env:PATH)"
         $dotnetSDKs = dotnet --list-sdks | ConvertTo-Json
         $dotnetRuntimes = dotnet --list-runtimes | ConvertTo-Json
     }
-    
+
     $dotnetVersions = (Get-ToolsetContent).dotnet.versions
 
     Context "Default" {
@@ -28,4 +29,14 @@ Describe "Dotnet" {
             }
         }
     }
+
+    Context "Dotnet tools" {
+        $dotnetTools = (Get-ToolsetContent).dotnet.tools
+        $testCases = $dotnetTools | ForEach-Object { @{ ToolName = $_.name; TestInstance = $_.test }}
+
+        It "<ToolName> is available" -TestCases $testCases {
+            "$TestInstance" | Should -ReturnZeroExitCode
+        }
+    }
+
 }

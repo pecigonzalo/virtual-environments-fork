@@ -2,11 +2,27 @@ function Get-CommandResult {
     param (
         [Parameter(Mandatory = $true)]
         [string] $Command,
-        [switch] $Multiline
+        [int[]] $ExpectExitCode = 0,
+        [switch] $Multiline,
+        [bool] $ValidateExitCode = $true
     )
+
     # Bash trick to suppress and show error output because some commands write to stderr (for example, "python --version")
     $stdout = & bash -c "$Command 2>&1"
     $exitCode = $LASTEXITCODE
+
+    if ($ValidateExitCode) {
+        if ($ExpectExitCode -notcontains $exitCode) {
+            try {
+                throw "StdOut: '$stdout' ExitCode: '$exitCode'"
+            } catch {
+                Write-Host $_.Exception.Message
+                Write-Host $_.ScriptStackTrace
+                exit $LASTEXITCODE
+            }
+        }
+    }
+
     return @{
         Output   = If ($Multiline -eq $true) { $stdout } else { [string]$stdout }
         ExitCode = $exitCode
@@ -22,16 +38,16 @@ function Get-KernelVersion {
     return "Linux kernel version: $kernelVersion"
 }
 
-function Test-IsUbuntu16 {
-    return (lsb_release -rs) -eq '16.04'
-}
-
 function Test-IsUbuntu18 {
     return (lsb_release -rs) -eq '18.04'
 }
 
 function Test-IsUbuntu20 {
     return (lsb_release -rs) -eq '20.04'
+}
+
+function Test-IsUbuntu22 {
+    return (lsb_release -rs) -eq "22.04"
 }
 
 function Get-ToolsetContent {
@@ -56,8 +72,8 @@ function Get-ToolsetValue {
 }
 
 function Get-AndroidPackages {
-    $androidSDKManagerPath = '/usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager'
-    $androidPackages = & $androidSDKManagerPath --list --verbose
+    $androidSDKManagerPath = "/usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager"
+    $androidPackages = & $androidSDKManagerPath --list --verbose 2>&1
     return $androidPackages
 }
 
@@ -117,7 +133,7 @@ function Edit-Environment {
         [ValidateSet('ReturnMerge', 'ReturnAppend', 'ReturnPrepend', 'Merge', 'Append', 'Prepend', 'Set', 'Replace', 'Add')]
         [String]$Action
     )
-    
+
     if ($Action -notin @('Set', 'Replace', 'Add')) {
         $ExistingValue = Get-EnvironmentVariable -Variable $VariableName
     }

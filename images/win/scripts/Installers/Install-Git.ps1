@@ -2,22 +2,17 @@
 ##  File:  Install-Git.ps1
 ##  Desc:  Install Git for Windows
 ################################################################################
+Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
 
 # Install git
 Choco-Install -PackageName git -ArgumentList '--installargs="/VERYSILENT /NORESTART /NOCANCEL /SP- /CLOSEAPPLICATIONS /RESTARTAPPLICATIONS /o:PathOption=CmdTools /o:BashTerminalOption=ConHost /o:EnableSymlinks=Enabled /COMPONENTS=gitlfs"'
 
+Update-SessionEnvironment
+
+git config --system --add safe.directory "*"
+
 # Install hub
 Choco-Install -PackageName hub
-
-# Install GVFS
-$url = "https://api.github.com/repos/microsoft/VFSForGit/releases/latest"
-[System.String] $gvfsLatest = (Invoke-RestMethod -Uri $url).assets.browser_download_url -match "SetupGVFS.+\.exe$"
-$gvfsInstallerPath = Start-DownloadWithRetry -Url $gvfsLatest -Name "SetupGVFS.exe"
-
-# Start-Process waits on the entire process tree but Wait-Process only waits on the initiating process(GVFS.Service.UI.exe)
-$env:GVFS_UNATTENDED = "1"
-$argList = "/VERYSILENT", "/NORESTART", "/NOCANCEL", "/SP-", "/CLOSEAPPLICATIONS", "/RESTARTAPPLICATIONS", "/SUPPRESSMSGBOXES"
-Start-Process $gvfsInstallerPath -ArgumentList $argList -PassThru | Wait-Process
 
 # Disable GCM machine-wide
 [Environment]::SetEnvironmentVariable("GCM_INTERACTIVE", "Never", [System.EnvironmentVariableTarget]::Machine)
@@ -30,7 +25,7 @@ if (Test-IsWin16) {
 }
 
 # Add well-known SSH host keys to ssh_known_hosts
-ssh-keyscan -t rsa github.com >> "C:\Program Files\Git\etc\ssh\ssh_known_hosts"
+ssh-keyscan -t rsa,ecdsa,ed25519 github.com >> "C:\Program Files\Git\etc\ssh\ssh_known_hosts"
 ssh-keyscan -t rsa ssh.dev.azure.com >> "C:\Program Files\Git\etc\ssh\ssh_known_hosts"
 
 Invoke-PesterTests -TestFile "Git"

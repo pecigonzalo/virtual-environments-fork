@@ -10,20 +10,25 @@ source "$HELPER_SCRIPTS"/install.sh
 
 # Install
 image_label="$(lsb_release -rs)"
-swift_version=$(curl -s -L -N https://swift.org/download|awk -F"[ <]" '/id="swift-/ {print $4; exit}')
+swift_version=$(curl -s "https://api.github.com/repos/apple/swift/releases/latest" | jq -r '.tag_name | match("[0-9.]+").string')
 
 swift_tar_name="swift-$swift_version-RELEASE-ubuntu$image_label.tar.gz"
 swift_tar_url="https://swift.org/builds/swift-$swift_version-release/ubuntu${image_label//./}/swift-$swift_version-RELEASE/$swift_tar_name"
-download_with_retries $swift_tar_url "/tmp" "$swift_tar_name"
+download_with_retries "$swift_tar_url" "/tmp" "$swift_tar_name"
 
-tar xzf /tmp/$swift_tar_name
-mv swift-$swift_version-RELEASE-ubuntu$image_label /usr/share/swift
+tar xzf /tmp/"$swift_tar_name"
 
-SWIFT_PATH="/usr/share/swift/usr/bin"
-SWIFT_BIN="$SWIFT_PATH/swift"
-SWIFTC_BIN="$SWIFT_PATH/swiftc"
-ln -s "$SWIFT_BIN" /usr/local/bin/swift
-ln -s "$SWIFTC_BIN" /usr/local/bin/swiftc
-echo "SWIFT_PATH=$SWIFT_PATH" | tee -a /etc/environment
+SWIFT_INSTALL_ROOT="/usr/share/swift"
+SWIFT_BIN_ROOT="$SWIFT_INSTALL_ROOT/usr/bin"
+SWIFT_LIB_ROOT="$SWIFT_INSTALL_ROOT/usr/lib"
+
+mv swift-"$swift_version"-RELEASE-ubuntu"$image_label" $SWIFT_INSTALL_ROOT
+mkdir -p /usr/local/lib
+
+ln -s "$SWIFT_BIN_ROOT/swift" /usr/local/bin/swift
+ln -s "$SWIFT_BIN_ROOT/swiftc" /usr/local/bin/swiftc
+ln -s "$SWIFT_LIB_ROOT/libsourcekitdInProc.so" /usr/local/lib/libsourcekitdInProc.so
+
+echo "SWIFT_PATH=$SWIFT_BIN_ROOT" | tee -a /etc/environment
 
 invoke_tests "Common" "Swift"

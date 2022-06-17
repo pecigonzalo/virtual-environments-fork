@@ -64,7 +64,7 @@ function Get-Cargooutdated {
 }
 
 function Get-Cargoaudit {
-    $cargoAuditVersion = Run-Command "cargo audit --version" | Take-Part -Part 1
+    $cargoAuditVersion = Run-Command "cargo-audit --version" | Take-Part -Part 1
     return "Cargo-audit $cargoAuditVersion"
 }
 
@@ -149,11 +149,6 @@ function Build-OSInfoSection {
     $output += New-MDHeader "macOS $version info" -Level 1
     $output += New-MDList -Style Unordered -Lines $parsedSystemInfo -NoNewLine
     return $output
-}
-
-function Get-PHPVersion {
-    $PHPVersion = Run-Command "php --version" | Select-Object -First 1 | Take-Part -Part 0,1
-    return $PHPVersion
 }
 
 function Get-MSBuildVersion {
@@ -271,8 +266,8 @@ function Get-CurlVersion {
 }
 
 function Get-GitVersion {
-    $gitVersion = Run-Command "git --version" | Take-Part -Part 2
-    return "Git: $gitVersion"
+    $gitVersion = Run-Command "git --version" | Take-Part -Part -1
+    return "Git $gitVersion"
 }
 
 function Get-GitLFSVersion {
@@ -308,7 +303,7 @@ function Get-PackerVersion {
 }
 
 function Get-OpenSSLVersion {
-    $opensslVersion = Get-Item /usr/local/opt/openssl | ForEach-Object {"{0} ``({1} -> {2})``" -f (Run-Command "openssl version"), $_.FullName, $_.Target}
+    $opensslVersion = Get-Item /usr/local/opt/openssl@1.1 | ForEach-Object {"{0} ``({1} -> {2})``" -f (Run-Command "openssl version"), $_.FullName, $_.Target}
     return $opensslVersion
 }
 
@@ -394,7 +389,7 @@ function Get-NewmanVersion {
 
 function Get-VirtualBoxVersion {
     $virtualBox = Run-Command "vboxmanage -v"
-    return "virtualbox $virtualBox"
+    return "VirtualBox $virtualBox"
 }
 
 function Get-VagrantVersion {
@@ -423,8 +418,13 @@ function Get-AppCenterCLIVersion {
 }
 
 function Get-AzureCLIVersion {
-    $azureCLIVersion = Run-Command "az -v" | Select-String "^azure-cli" | Take-Part -Part 1
+    $azureCLIVersion = (az version | ConvertFrom-Json).'azure-cli'
     return "Azure CLI $azureCLIVersion"
+}
+
+function Get-AzureDevopsVersion {
+    $azdevopsVersion = (az version | ConvertFrom-Json).extensions.'azure-devops'
+    return "Azure CLI (azure-devops) $azdevopsVersion"
 }
 
 function Get-AWSCLIVersion {
@@ -448,7 +448,7 @@ function Get-AliyunCLIVersion {
 }
 
 function Get-GHCupVersion {
-    $ghcUpVersion = Run-Command "ghcup --version" | Take-Part -Part 5
+    $ghcUpVersion = (Run-Command "ghcup --version" | Take-Part -Part 5).Replace('v','')
     return "GHCup $ghcUpVersion"
 }
 
@@ -512,6 +512,46 @@ function Get-KotlinVersion {
     return "Kotlin $kotlinVersion"
 }
 
+function Get-SbtVersion {
+    $sbtVersion = Run-Command "sbt -version" | Take-Part -Part 3
+    return "Sbt $sbtVersion"
+}
+
+function Get-JazzyVersion {
+    $jazzyVersion = Run-Command "jazzy --version" | Take-Part -Part 2
+    return "Jazzy $jazzyVersion"
+}
+
+function Get-ZlibVersion {
+	$zlibVersion = (brew info zlib)[0] | Take-Part -Part 2
+	return "Zlib $zlibVersion"
+}
+
+function Get-LibXftVersion {
+    $libXftVersion = (brew info libxft)[0] | Take-Part -Part 2
+    return "libXft $libXftVersion"
+}
+
+function Get-LibXextVersion {
+    $libXextVersion = (brew info libxext)[0] | Take-Part -Part 2
+    return "libXext $libXextVersion"
+}
+
+function Get-TclTkVersion {
+    $tcltkVersion = (brew info tcl-tk)[0] | Take-Part -Part 2
+    return "Tcl/Tk $tcltkVersion"
+}
+
+function Get-YqVersion {
+    $yqVersion = Run-Command "yq --version"
+    return "$yqVersion"
+}
+
+function Get-ImageMagickVersion {
+    $imagemagickVersion = Run-Command "magick --version" | Select-Object -First 1 | Take-Part -Part 1,2
+    return "$imagemagickVersion"
+}
+
 function Build-PackageManagementEnvironmentTable {
     return @(
         @{
@@ -527,5 +567,20 @@ function Build-PackageManagementEnvironmentTable {
             "Name" = $_.Name
             "Value" = $_.Value
         }
+    }
+}
+
+function Get-GraalVMVersion {
+    $version = & "$env:GRAALVM_11_ROOT\java" --version | Select-String -Pattern "GraalVM" | Take-Part -Part 5,6
+    return $version
+}
+
+function Build-GraalVMTable {
+    $version = Get-GraalVMVersion
+    $envVariables = "GRAALVM_11_ROOT"
+
+    return [PSCustomObject] @{
+        "Version" = $version
+        "Environment variables" = $envVariables
     }
 }

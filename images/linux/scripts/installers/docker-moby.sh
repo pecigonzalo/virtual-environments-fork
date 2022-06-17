@@ -17,6 +17,7 @@ if ! IsPackageInstalled $docker_package; then
     apt-get update
     apt-get install -y moby-engine moby-cli
     apt-get install --no-install-recommends -y moby-buildx
+    apt-get install -y moby-compose
 else
     echo "Docker ($docker_package) is already installed"
 fi
@@ -47,5 +48,11 @@ done
 # image. Logout _should_ return a zero exit code even if no credentials were
 # stored from earlier.
 docker logout
+
+# Install amazon-ecr-credential-helper
+aws_latest_release_url="https://api.github.com/repos/awslabs/amazon-ecr-credential-helper/releases/latest"
+aws_helper_url=$(curl "${authString[@]}" -sL $aws_latest_release_url | jq -r '.body' | awk -F'[()]' '/linux-amd64/ {print $2}')
+download_with_retries "$aws_helper_url" "/usr/bin" docker-credential-ecr-login
+chmod +x /usr/bin/docker-credential-ecr-login
 
 invoke_tests "Tools" "Docker"

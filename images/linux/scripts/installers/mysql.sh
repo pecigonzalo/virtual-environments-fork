@@ -4,14 +4,16 @@
 ##  Desc:  Installs MySQL Client
 ################################################################################
 
-exit 0
-
-export ACCEPT_EULA=Y
+source /etc/os-release
+# shellcheck source=/images/linux/scripts/helpers/os.sh
+source "$HELPER_SCRIPTS"/os.sh
 
 # Mysql setting up root password
 MYSQL_ROOT_PASSWORD=root
 echo "mysql-server mysql-server/root_password password $MYSQL_ROOT_PASSWORD" | debconf-set-selections
 echo "mysql-server mysql-server/root_password_again password $MYSQL_ROOT_PASSWORD" | debconf-set-selections
+
+export ACCEPT_EULA=Y
 
 # Install MySQL Client
 apt-get install mysql-client -y

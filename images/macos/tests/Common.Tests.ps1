@@ -9,7 +9,7 @@ Describe ".NET" {
     }
 }
 
-Describe "GCC" -Skip:($os.IsHighSierra) {
+Describe "GCC" {
     $testCases = Get-ToolsetValue -KeyPath gcc.versions | ForEach-Object { @{Version = $_} }
 
     It "GCC <Version>" -TestCases $testCases {
@@ -33,7 +33,7 @@ Describe "GCC" -Skip:($os.IsHighSierra) {
     }
 }
 
-Describe "vcpkg" -Skip:($os.IsHighSierra -or $os.IsMojave) {
+Describe "vcpkg" {
     It "vcpkg" {
         "vcpkg version" | Should -ReturnZeroExitCode
     }
@@ -66,7 +66,7 @@ Describe "Miniconda" {
     }
 }
 
-Describe "Stack" -Skip:($os.IsHighSierra) {
+Describe "Stack" {
     It "Stack" {
         "stack --version" | Should -ReturnZeroExitCode
     }
@@ -79,7 +79,25 @@ Describe "CocoaPods" {
 }
 
 Describe "VSMac" {
-    It "VS4Mac is installed" {
+    $vsMacVersions = Get-ToolsetValue "xamarin.vsmac.versions"
+    $defaultVSMacVersion = Get-ToolsetValue "xamarin.vsmac.default"
+
+    $testCases = $vsMacVersions | ForEach-Object {
+        $vsPath = "/Applications/Visual Studio $_.app"
+        if ($_ -eq $defaultVSMacVersion) {
+            $vsPath = "/Applications/Visual Studio.app"
+        }
+
+        @{ vsversion = $_ ; vspath = $vsPath }
+    }
+
+    It "Visual Studio <vsversion> for Mac is installed" -TestCases $testCases {
+        $vstoolPath = Join-Path $vsPath "Contents/MacOS/vstool"
+        $vsPath | Should -Exist
+        $vstoolPath | Should -Exist
+    }
+
+    It "Visual Studio $defaultVSMacVersion for Mac is default" {
         $vsPath = "/Applications/Visual Studio.app"
         $vstoolPath = Join-Path $vsPath "Contents/MacOS/vstool"
         $vsPath | Should -Exist
@@ -96,5 +114,27 @@ Describe "Swig" {
 Describe "Bicep" {
     It "Bicep" {
         "bicep --version" | Should -ReturnZeroExitCode
+    }
+}
+
+Describe "Go" {
+    It "Go" {
+        "go version" | Should -ReturnZeroExitCode
+    }
+}
+
+Describe "GraalVM" {
+    It "graalvm" {
+        '$GRAALVM_11_ROOT/java -version' | Should -ReturnZeroExitCode
+    }
+
+    It "native-image" {
+        '$GRAALVM_11_ROOT/native-image --version' | Should -ReturnZeroExitCode
+    }
+}
+
+Describe "VirtualBox" -Skip:($os.IsBigSur) {
+    It "Check kext kernel modules" {
+        kextstat | Out-String | Should -Match "org.virtualbox.kext"
     }
 }
